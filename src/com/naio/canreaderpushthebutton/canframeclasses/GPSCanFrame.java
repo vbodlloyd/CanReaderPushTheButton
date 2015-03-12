@@ -21,7 +21,6 @@ public class GPSCanFrame extends CanFrame {
 
 	private List<Integer> gpsData = new ArrayList<Integer>();
 	private boolean goForAction;
-	private RelativeLayout rlimu;
 
 	public GPSCanFrame(int id, int dlc, List<Integer> data) {
 		super(id, dlc, data);
@@ -57,103 +56,8 @@ public class GPSCanFrame extends CanFrame {
 		}
 	}
 
-	public void display_on(RelativeLayout rl, ViewPager vp) {
-		if (!goForAction)
-			return;
-		synchronized (lock) {
 
-			if (vp != null) {
-				this.rlimu = (RelativeLayout) vp.getChildAt(0).findViewById(
-						R.id.rl_imu_activity);
-				if (vp.getCurrentItem() != 0) {
-					return;
-				}
-			}
-			if (idMess == null) {
-				return;
-			}
-			switch (idMess) {
-			case "0001":
-			case "0010":
-			case "0000":
-				display_data_gps(rl);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-	private void display_data_gps(RelativeLayout rl) {
-
-		String text = "";
-		for (int a : gpsData) {
-			text += (char) a;
-		}
-
-		String[] gps = text.split(",");
-		if (gps.length <= 2) {
-			return;
-		}
-		if (gps[0].contains("GPGLL")) {
-			if (rl == null) {
-				if (rlimu == null) {
-					return;
-				}
-				((TextView) rlimu
-						.findViewById(R.id.textview_gps_text_main_activity))
-						.setText(convert_data_GPGLL(gps));
-				return;
-			}
-			((TextView) rl.findViewById(R.id.textview_gps_text_main_activity))
-					.setText(convert_data_GPGLL(gps));
-			return;
-		}
-		if (gps[0].contains("GPGSA")) {
-			if (rl == null) {
-				if (rlimu == null) {
-					return;
-				}
-				((TextView) rlimu
-						.findViewById(R.id.textview_gps_text2_main_activity))
-						.setText(convert_data_GPGSA(gps));
-				return;
-			}
-			((TextView) rl.findViewById(R.id.textview_gps_text2_main_activity))
-					.setText(convert_data_GPGSA(gps));
-			return;
-		}
-
-		if (gps[0].contains("GPVTG")) {
-			if (rl == null) {
-				if (rlimu == null) {
-					return;
-				}
-				((TextView) rlimu
-						.findViewById(R.id.textview_gps_text3_main_activity))
-						.setText(convert_data_GPVTG(gps));
-				return;
-			}
-			((TextView) rl.findViewById(R.id.textview_gps_text3_main_activity))
-					.setText(convert_data_GPVTG(gps));
-			return;
-		}
-
-		if (gps[0].contains("GPGSV")) {
-			if (rl == null) {
-				if (rlimu == null) {
-					return;
-				}
-				((TextView) rlimu
-						.findViewById(R.id.textview_gps_text4_main_activity))
-						.setText(convert_data_GPGSV(gps));
-				return;
-			}
-			((TextView) rl.findViewById(R.id.textview_gps_text4_main_activity))
-					.setText(convert_data_GPGSV(gps));
-			return;
-		}
-	}
+	
 
 	/**
 	 * @param gps

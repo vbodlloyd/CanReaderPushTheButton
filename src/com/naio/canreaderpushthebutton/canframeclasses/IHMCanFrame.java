@@ -23,21 +23,16 @@ import android.widget.TextView;
  */
 public class IHMCanFrame extends CanFrame {
 
-	private Integer codeCommande1, cc1_arg1, cc1_arg2, cc1_arg3;
 	private Integer etatClavier;
 	private Integer etatLed, couleurLed;
-	private Integer codeCommande2, cc2_arg1, cc2_arg2, cc2_arg3, cc2_arg4;
-	private Integer status;
-	private Integer delaiLong, delaiRepet;
-	private Integer versionMaj, versionMin;
 	private Integer contraste;
 	private Integer backlight;
 	private Integer board, rev;
-	private RelativeLayout rlimu;
-	private boolean is_there_data_clavier, is_there_data_led,
-			is_there_data_status, is_there_data_delai, is_there_data_version,
-			is_there_data_contraste, is_there_data_backlight,
-			is_there_data_board;
+	private Integer delaiLong;
+	private Integer delaiRepet;
+	private Integer versionMin;
+	private Integer versionMaj;
+	private Integer status;
 
 	public IHMCanFrame(int id, int dlc, List<Integer> data) {
 		super(id, dlc, data);
@@ -47,15 +42,6 @@ public class IHMCanFrame extends CanFrame {
 
 	public IHMCanFrame() {
 		this.type = "IHM";
-		is_there_data_clavier = false;
-		is_there_data_led = false;
-		is_there_data_status = false;
-		is_there_data_delai = false;
-		is_there_data_version = false;
-		is_there_data_contraste = false;
-		is_there_data_backlight = false;
-		is_there_data_board = false;
-
 	}
 
 	public IHMCanFrame setParams(int id, int dlc, List<Integer> data) {
@@ -72,35 +58,28 @@ public class IHMCanFrame extends CanFrame {
 			switch (idMess) {
 			case "0001":
 				save_data_clavier();
-				is_there_data_clavier = true;
+
 				break;
 			case "0010":
 				save_data_led();
-				is_there_data_led = true;
 				break;
 			case "0100":
 				save_data_status();
-				is_there_data_status = true;
 				break;
 			case "0101":
 				save_data_delai();
-				is_there_data_delai = true;
 				break;
 			case "0110":
 				save_data_version();
-				is_there_data_version = true;
 				break;
 			case "0111":
 				save_data_contraste();
-				is_there_data_contraste = true;
 				break;
 			case "1000":
 				save_data_backlight();
-				is_there_data_backlight = true;
 				break;
 			case "1111":
 				save_data_board();
-				is_there_data_board = true;
 				break;
 			default:
 				break;
@@ -108,47 +87,6 @@ public class IHMCanFrame extends CanFrame {
 		}
 	}
 
-	public void display_on(RelativeLayout rl, ViewPager vp) {
-		synchronized (lock) {
-
-			if (vp != null) {
-				this.rlimu = (RelativeLayout) vp.getChildAt(2).findViewById(
-						R.id.rl_ihm_activity);
-				if (vp.getCurrentItem() != 2) {
-					return;
-				}
-			}
-			if (is_there_data_clavier)
-				display_data_etat_clavier(rl);
-			if (is_there_data_led)
-				display_data_etat_led(rl);
-			if (is_there_data_status)
-				display_data_status(rl);
-			if (is_there_data_version)
-				display_data_version(rl);
-			if (is_there_data_contraste)
-				display_data_contraste(rl);
-			if (is_there_data_backlight)
-				display_data_backlight(rl);
-			if (is_there_data_board)
-				display_data_board(rl);
-
-		}
-	}
-
-	/**
-	 * @param rl
-	 */
-	private void display_data_board(RelativeLayout rl) {
-
-		if (rl == null) {
-			((TextView) rlimu.findViewById(R.id.ihm_board)).setText("" + board);
-			((TextView) rlimu.findViewById(R.id.ihm_rev)).setText("" + rev);
-			return;
-		}
-		((TextView) rl.findViewById(R.id.ihm_board)).setText("" + board);
-		((TextView) rl.findViewById(R.id.ihm_rev)).setText("" + rev);
-	}
 
 	/**
 	 * 
@@ -170,19 +108,6 @@ public class IHMCanFrame extends CanFrame {
 		}
 	}
 
-	/**
-	 * @param rl
-	 */
-	private void display_data_backlight(RelativeLayout rl) {
-
-		if (rl == null) {
-			((TextView) rlimu.findViewById(R.id.ihm_backlight)).setText(""
-					+ backlight);
-			return;
-		}
-		((TextView) rl.findViewById(R.id.ihm_backlight))
-				.setText("" + backlight);
-	}
 
 	/**
 	 * 
@@ -197,19 +122,6 @@ public class IHMCanFrame extends CanFrame {
 		}
 	}
 
-	/**
-	 * @param rl
-	 */
-	private void display_data_contraste(RelativeLayout rl) {
-
-		if (rl == null) {
-			((TextView) rlimu.findViewById(R.id.ihm_contraste)).setText(""
-					+ contraste);
-			return;
-		}
-		((TextView) rl.findViewById(R.id.ihm_contraste))
-				.setText("" + contraste);
-	}
 
 	/**
 	 * 
@@ -222,23 +134,6 @@ public class IHMCanFrame extends CanFrame {
 		synchronized (lock) {
 			return contraste;
 		}
-	}
-
-	/**
-	 * @param rl
-	 */
-	private void display_data_version(RelativeLayout rl) {
-
-		if (rl == null) {
-			((TextView) rlimu.findViewById(R.id.ihm_maj)).setText(""
-					+ versionMaj);
-			((TextView) rlimu.findViewById(R.id.ihm_min)).setText(""
-					+ versionMin);
-			return;
-		}
-		((TextView) rl.findViewById(R.id.ihm_maj)).setText("" + versionMaj);
-		((TextView) rl.findViewById(R.id.ihm_min)).setText("" + versionMin);
-
 	}
 
 	/**
@@ -262,18 +157,6 @@ public class IHMCanFrame extends CanFrame {
 
 	}
 
-	/**
-	 * @param rl
-	 */
-	private void display_data_status(RelativeLayout rl) {
-
-		if (rl == null) {
-			((TextView) rlimu.findViewById(R.id.ihm_status)).setText(""
-					+ status);
-			return;
-		}
-		((TextView) rl.findViewById(R.id.ihm_status)).setText("" + status);
-	}
 
 	/**
 	 * 
@@ -281,71 +164,6 @@ public class IHMCanFrame extends CanFrame {
 	private void save_data_status() {
 		status = getData().get(0);
 
-	}
-
-	/**
-	 * @param rl
-	 */
-	private void display_data_code_2(RelativeLayout rl) {
-		// NOT USE
-		switch (dlc) {
-		case 5:
-			cc2_arg4 = getData().get(4);
-		case 4:
-			cc2_arg3 = getData().get(3);
-		case 3:
-			cc2_arg2 = getData().get(2);
-		case 2:
-			cc2_arg1 = getData().get(1);
-		case 1:
-			codeCommande2 = getData().get(0);
-		default:
-			break;
-		}
-
-	}
-
-	/**
-	 * @param rl
-	 */
-	private void display_data_etat_led(RelativeLayout rl) {
-
-		String text = Integer.toBinaryString(etatLed);
-		String text2 = Integer.toBinaryString(couleurLed);
-		text = BytesFunction.fillWithZeroTheBinaryString(text);
-		text2 = BytesFunction.fillWithZeroTheBinaryString(text2);
-		String[] data = text.split("(?<!^)");
-		String[] data2 = text2.split("(?<!^)");
-		String c1 = "";
-		String c2 = "";
-		String c3 = "";
-		String c4 = "";
-		if (data2[7].contains("0"))
-			c1 = "Rouge";
-		else
-			c1 = "Verte";
-		if (data2[6].contains("0"))
-			c2 = "Rouge";
-		else
-			c2 = "Verte";
-		if (data2[5].contains("0"))
-			c3 = "Rouge";
-		else
-			c3 = "Verte";
-		if (data2[4].contains("1"))
-			c4 = "Verte";
-		else
-			c4 = "Rouge";
-		String write = "";
-		write += "Gauche:" + data[7] + "," + c1;
-		write += "  ;Led 2:" + data[6] + "," + c2;
-		write += "\nLed 3:" + data[5] + "," + c3;
-		write += " ;Droite:" + data[4] + "," + c4;
-		if (rl == null) {
-			((TextView) rlimu.findViewById(R.id.etat_led)).setText(write);
-			return;
-		}
-		((TextView) rl.findViewById(R.id.etat_led)).setText(write);
 	}
 
 	/**
@@ -395,31 +213,6 @@ public class IHMCanFrame extends CanFrame {
 	}
 
 	/**
-	 * @param rl
-	 */
-	private void display_data_etat_clavier(RelativeLayout rl) {
-
-		String text = Integer.toBinaryString(etatClavier);
-		text = BytesFunction.fillWithZeroTheBinaryString(text);
-		String[] data = text.split("(?<!^)");
-
-		String keyboardState = "";
-		keyboardState += "valide:" + data[6];
-		keyboardState += " annuler:" + data[7];
-		keyboardState += " droite:" + data[3];
-		keyboardState += " gauche:" + data[2];
-		keyboardState += " haut:" + data[5];
-		keyboardState += " bas:" + data[4];
-
-		if (rl == null) {
-			((TextView) rlimu.findViewById(R.id.etat_clavier))
-					.setText(keyboardState);
-			return;
-		}
-		((TextView) rl.findViewById(R.id.etat_clavier)).setText(keyboardState);
-	}
-
-	/**
 	 * 
 	 */
 	private void save_data_clavier() {
@@ -445,24 +238,5 @@ public class IHMCanFrame extends CanFrame {
 		keyboardState += " bas:" + data[4];
 		return keyboardState;
 		}
-	}
-
-	/**
-	 * @param rl
-	 */
-	private void display_data_code_1(RelativeLayout rl) {
-		switch (dlc) {
-		case 4:
-			cc1_arg3 = getData().get(3);
-		case 3:
-			cc1_arg2 = getData().get(2);
-		case 2:
-			cc1_arg1 = getData().get(1);
-		case 1:
-			codeCommande1 = getData().get(0);
-		default:
-			break;
-		}
-
 	}
 }

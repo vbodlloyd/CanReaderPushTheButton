@@ -16,7 +16,6 @@ import com.naio.canreaderpushthebutton.parser.CanParser;
 import com.naio.canreaderpushthebutton.threads.CanDumpThread;
 import com.naio.canreaderpushthebutton.threads.CanParserThread;
 import com.naio.canreaderpushthebutton.threads.CanSendThread;
-import com.naio.canreaderpushthebutton.utils.MyPagerAdapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -78,8 +77,6 @@ public class MainActivity extends FragmentActivity {
 	private static Integer stateIn = 0;
 	private static boolean clickOnScreen = false;
 
-	private static boolean binary_added = false;
-
 	/**
 	 * @return the lock
 	 */
@@ -96,7 +93,6 @@ public class MainActivity extends FragmentActivity {
 		}
 	};
 	private RelativeLayout rl;
-	private MyPagerAdapter mPagerAdapter;
 	private ViewPager pager;
 	private CanParserThread canParserThread;
 	private Integer state;
@@ -136,9 +132,7 @@ public class MainActivity extends FragmentActivity {
 		executeCommand("su -c mount -o rw,remount /");
 		File file = new File("/sbin/candump");
 		executeCommand("su -c mount -o ro,remount /");
-		if (file.exists())
-			binary_added = true;
-		else {
+		if (!file.exists()) {
 			executeCommand("su -c mount -o rw,remount /");
 			executeCommand("su -c cp /storage/sdcard0/candump2 /sbin/candump");
 			executeCommand("su -c cp /storage/sdcard0/cansend2 /sbin/cansend");
@@ -153,7 +147,7 @@ public class MainActivity extends FragmentActivity {
 			executeCommand("su -c insmod /storage/sdcard0/drive/peak_usb.ko");
 			executeCommand("su -c rmmod pcan");
 			executeCommand("su -c mount -o ro,remount /");
-			binary_added = true;
+
 			new AlertDialog.Builder(this)
 					.setTitle("Information")
 					.setMessage(
@@ -232,7 +226,6 @@ public class MainActivity extends FragmentActivity {
 			try {
 				Thread.sleep(400);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			canDumpThread = new CanDumpThread();
@@ -242,8 +235,10 @@ public class MainActivity extends FragmentActivity {
 			canParserThread.start();
 			cansend("00F", KEEP_CONTROL_CAN_LOOP_MESSAGE);
 			handler.postDelayed(runnable, MILLISECONDS_RUNNABLE);
-			/*((Button) findViewById(R.id.button_read_main_activity))
-					.setText("STOP");*/
+			/*
+			 * ((Button) findViewById(R.id.button_read_main_activity))
+			 * .setText("STOP");
+			 */
 			reading = true;
 			return;
 		}
@@ -254,13 +249,11 @@ public class MainActivity extends FragmentActivity {
 		canParserThread.interrupt();
 		handler.removeCallbacks(runnable);
 		go_button.setText("Go");
-		//((Button) findViewById(R.id.button_read_main_activity)).setText("READ");
 		// the sleep here is just because there is a sleep when the user press
 		// the READ button, so do the STOP.
 		try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -368,7 +361,7 @@ public class MainActivity extends FragmentActivity {
 				break;
 			case 1:
 				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-					
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
@@ -385,16 +378,17 @@ public class MainActivity extends FragmentActivity {
 				};
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage("Avez vous entendu un son?")
+				builder.setMessage(
+						"Avez vous entendu un son ( *bip* *bip* *bip* )?")
 						.setPositiveButton("Ah que oui", dialogClickListener)
 						.setNegativeButton("Ah que non", dialogClickListener)
 						.show();
-				
-				stateIn=20;
+
+				stateIn = 20;
 				break;
 			case 20:
-				if(clickOnScreen)
-					stateIn =2;
+				if (clickOnScreen)
+					stateIn = 2;
 				break;
 			case 2:
 				go_button
@@ -506,7 +500,7 @@ public class MainActivity extends FragmentActivity {
 				String[] gps = text.split(",");
 				if (gps.length <= 2) {
 					cptStateGps++;
-					if(cptStateGps > 5){
+					if (cptStateGps > 5) {
 						stateIn++;
 						is_test_gps_good = false;
 					}
@@ -524,7 +518,7 @@ public class MainActivity extends FragmentActivity {
 					cptStateGps++;
 					stateIn = 0;
 				}
-				if(cptStateGps > 5){
+				if (cptStateGps > 5) {
 					stateIn++;
 					is_test_gps_good = false;
 				}
