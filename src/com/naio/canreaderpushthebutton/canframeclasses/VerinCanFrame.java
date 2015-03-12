@@ -189,12 +189,43 @@ public class VerinCanFrame extends CanFrame {
 		((TextView) rl.findViewById(R.id.tension_pile)).setText("" + val2 + " V");
 
 	}
+	
+	public double getTension24v(){
+		synchronized (lock) {
+			
+			return BytesFunction.fromTwoComplement(t24vMSB, t24vLSB, 16, 1000);
+		}
+	}
+	
+	public double getTensionPile(){
+		synchronized (lock) {
+			return BytesFunction.fromTwoComplement(pileMSB, pileLSB, 16, 1000);
+		}
+	}
 
 	private void save_data_tension_principale() {
 		t24vLSB = getData().get(0);
 		t24vMSB = getData().get(1);
 		pileLSB = getData().get(2);
 		pileMSB = getData().get(3);
+	}
+	
+	public double getTension12v(){
+		synchronized (lock) {
+			return BytesFunction.fromTwoComplement(t12vMSB, t12vLSB, 16, 1000);
+		}
+	}
+	
+	public double getTension33v(){
+		synchronized (lock) {
+			return BytesFunction.fromTwoComplement(t33vMSB, t33vLSB, 16, 1000);
+		}
+	}
+	
+	public double getTension5v(){
+		synchronized (lock) {
+			return BytesFunction.fromTwoComplement(t5vMSB, t5vLSB, 16, 1000);
+		}
 	}
 
 	private void display_data_tension_12v(RelativeLayout rl) {
@@ -294,14 +325,8 @@ public class VerinCanFrame extends CanFrame {
 			if (rl_second_layout == null) {
 				return;
 			}
-			((TextView) rl_second_layout.findViewById(R.id.sortie_12v))
-					.setText(write);
-			((TextView) rl_second_layout.findViewById(R.id.activation_usb))
-					.setText(write2);
 			return;
 		}
-		((TextView) rl.findViewById(R.id.sortie_12v)).setText(write);
-		((TextView) rl.findViewById(R.id.activation_usb)).setText(write2);
 	}
 
 	/**
@@ -372,6 +397,49 @@ public class VerinCanFrame extends CanFrame {
 				+ VerinCanFrame.cptArd + " AVD:" + VerinCanFrame.cptAvd
 				+ " ARG:" + VerinCanFrame.cptArg + " AVG:"
 				+ VerinCanFrame.cptAvg);
+	}
+	
+	public String getOdo(){
+		synchronized (lock) {
+			String text = Integer.toBinaryString(lectureODO);
+			String[] data = BytesFunction.fillWithZeroTheBinaryString(text).split(
+					"(?<!^)");
+			String write = "";
+			write += "ARD:" + data[7];
+			write += " AVD:" + data[6];
+			write += " ARG:" + data[5];
+			write += " AVG:" + data[4];
+			if (data[7].contains("1") && VerinCanFrame.state_ard) {
+				VerinCanFrame.cptArd += 1;
+				VerinCanFrame.state_ard = false;
+			}
+			if (data[6].contains("1") && VerinCanFrame.state_avd) {
+				VerinCanFrame.cptAvd += 1;
+				VerinCanFrame.state_avd = false;
+			}
+			if (data[5].contains("1") && VerinCanFrame.state_arg) {
+				VerinCanFrame.cptArg += 1;
+				VerinCanFrame.state_arg = false;
+			}
+			if (data[4].contains("1") && VerinCanFrame.state_avg) {
+				VerinCanFrame.cptAvg += 1;
+				VerinCanFrame.state_avg = false;
+			}
+			if (data[7].contains("0") && !VerinCanFrame.state_ard) {
+				VerinCanFrame.state_ard = true;
+			}
+			if (data[6].contains("0") && !VerinCanFrame.state_avd) {
+				VerinCanFrame.state_avd = true;
+			}
+			if (data[5].contains("0") && !VerinCanFrame.state_arg) {
+				VerinCanFrame.state_arg = true;
+			}
+			if (data[4].contains("0") && !VerinCanFrame.state_avg) {
+				VerinCanFrame.state_avg = true;
+			}
+			return write;
+			
+		}
 	}
 
 	/**
@@ -452,6 +520,39 @@ public class VerinCanFrame extends CanFrame {
 	private void save_data_retour() {
 		retourPosition = getData().get(0);
 		etatVerin = getData().get(1);
+	}
+	
+	public Integer getRetourPosition(){
+		synchronized (lock) {
+			return retourPosition;
+			
+		}
+	}
+	
+	public String getEtatVerin(){
+		synchronized (lock) {
+		String text = Integer.toBinaryString(etatVerin);
+		String write = "";
+		Log.e("etatVerin", BytesFunction.fillWithZeroTheBinaryString(text)
+				.subSequence(5, 8).toString());
+		switch (BytesFunction.fillWithZeroTheBinaryString(text)
+				.subSequence(6, 8).toString()) {
+		case "11":
+			write += "dep. en cours, erreur driver";
+			break;
+		case "10":
+			write += "erreur driver";
+			break;
+		case "01":
+			write += "dep. en cours";
+			break;
+		case "00":
+			write += "no data";
+			break;
+
+		}
+		return write;
+		}
 	}
 
 	/**

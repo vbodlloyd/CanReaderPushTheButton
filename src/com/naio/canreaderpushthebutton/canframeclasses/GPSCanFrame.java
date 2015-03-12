@@ -19,7 +19,7 @@ import android.widget.TextView;
  */
 public class GPSCanFrame extends CanFrame {
 
-	List<Integer> gpsData = new ArrayList<Integer>();
+	private List<Integer> gpsData = new ArrayList<Integer>();
 	private boolean goForAction;
 	private RelativeLayout rlimu;
 
@@ -32,6 +32,12 @@ public class GPSCanFrame extends CanFrame {
 	public GPSCanFrame() {
 		this.type = "GPS";
 		goForAction = false;
+	}
+	
+	public List<Integer> getGpsData(){
+		synchronized (lock) {
+			return gpsData;
+		}
 	}
 
 	public GPSCanFrame setParams(int id, int dlc, List<Integer> data) {

@@ -30,6 +30,12 @@ public class GSMCanFrame extends CanFrame {
 		this.type = "GSM";
 		gsmData = new ArrayList<Integer>();
 	}
+	
+	public List<Integer> getGsmData(){
+		synchronized (lock) {
+			return gsmData;
+		}
+	}
 
 	public GSMCanFrame setParams(int id, int dlc, List<Integer> data) {
 		super.setParams(id, dlc, data);

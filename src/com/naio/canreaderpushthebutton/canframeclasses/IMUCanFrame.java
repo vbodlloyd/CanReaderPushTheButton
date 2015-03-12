@@ -172,8 +172,6 @@ public class IMUCanFrame extends CanFrame {
 					.setText("" + rev);
 			return;
 		}
-		((TextView) rl.findViewById(R.id.magneto_board)).setText("" + board);
-		((TextView) rl.findViewById(R.id.magneto_rev)).setText("" + rev);
 	}
 
 	/**
@@ -199,8 +197,6 @@ public class IMUCanFrame extends CanFrame {
 					.setText("" + versionMin);
 			return;
 		}
-		((TextView) rl.findViewById(R.id.imu_maj)).setText("" + versionMaj);
-		((TextView) rl.findViewById(R.id.imu_min)).setText("" + versionMin);
 	}
 
 	/**
@@ -226,7 +222,6 @@ public class IMUCanFrame extends CanFrame {
 					.setText("" + tempeFinal);
 			return;
 		}
-		((TextView) rl.findViewById(R.id.imu_tempe)).setText("" + tempeFinal);
 	}
 
 	/**
@@ -234,7 +229,13 @@ public class IMUCanFrame extends CanFrame {
 	 */
 	private void save_data_temperature() {
 		temperature = BytesFunction.fromTwoComplement(getData().get(0), 8);
-
+	}
+	
+	public double getTemperature(){
+		synchronized (lock) {
+			double tempeFinal = (double) temperature * 0.5 + 23;
+			return tempeFinal;
+		}
 	}
 
 	private void display_data_magneto(RelativeLayout rl) {
@@ -290,11 +291,6 @@ public class IMUCanFrame extends CanFrame {
 		}
 		if (IMUCanFrame.indexDisplay2 == 9) {
 
-			((TextView) rl.findViewById(R.id.magneto_xmsb)).setText(magnetoX);
-			((TextView) rl.findViewById(R.id.magneto_ymsb)).setText(magnetoY);
-			((TextView) rl.findViewById(R.id.magneto_zmsb)).setText(magnetoZ);
-			((TextView) rl.findViewById(R.id.magneto_resmsb)).setText(""
-					+ (resMagnMSB * 256 + resMagnLSB));
 			IMUCanFrame.indexDisplay2 = 0;
 		} else {
 			IMUCanFrame.indexDisplay2 += 1;
@@ -366,9 +362,7 @@ public class IMUCanFrame extends CanFrame {
 					.setText(gyroZ);
 			return;
 		}
-		((TextView) rl.findViewById(R.id.gyro_xmsb)).setText(gyroX);
-		((TextView) rl.findViewById(R.id.gyro_ymsb)).setText(gyroY);
-		((TextView) rl.findViewById(R.id.gyro_zmsb)).setText(gyroZ);
+
 	}
 
 	/**
@@ -442,9 +436,7 @@ public class IMUCanFrame extends CanFrame {
 			return;
 		}
 		if (IMUCanFrame.indexDisplay == 9) {
-			((TextView) rl.findViewById(R.id.accel_xmsb)).setText(accelX);
-			((TextView) rl.findViewById(R.id.accel_ymsb)).setText(accelY);
-			((TextView) rl.findViewById(R.id.accel_zmsb)).setText(accelZ);
+
 			IMUCanFrame.indexDisplay = 0;
 		} else {
 			IMUCanFrame.indexDisplay += 1;

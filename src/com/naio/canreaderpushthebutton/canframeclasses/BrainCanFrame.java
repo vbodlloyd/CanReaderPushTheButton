@@ -35,6 +35,12 @@ public class BrainCanFrame extends CanFrame {
 		return this;
 	}
 
+	public UInt8 getTemperature() {
+		synchronized (lock) {
+			return temperature;
+		}
+	}
+
 	public void display_on(RelativeLayout rl, ViewPager vp) {
 		synchronized (lock) {
 			if (vp != null) {
@@ -45,7 +51,6 @@ public class BrainCanFrame extends CanFrame {
 				display_data_temperature(rl);
 		}
 	}
-
 
 	public void save_datas() {
 		synchronized (lock) {
@@ -61,8 +66,6 @@ public class BrainCanFrame extends CanFrame {
 			}
 		}
 	}
-
-
 
 	/**
 	 * 

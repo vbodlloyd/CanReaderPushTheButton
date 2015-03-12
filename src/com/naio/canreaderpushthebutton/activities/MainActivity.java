@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Vector;
 
 import com.naio.canreaderpushthebutton.R;
+import com.naio.canreaderpushthebutton.canframeclasses.BrainCanFrame;
+import com.naio.canreaderpushthebutton.canframeclasses.GPSCanFrame;
 import com.naio.canreaderpushthebutton.canframeclasses.GSMCanFrame;
+import com.naio.canreaderpushthebutton.canframeclasses.IHMCanFrame;
+import com.naio.canreaderpushthebutton.canframeclasses.IMUCanFrame;
 import com.naio.canreaderpushthebutton.canframeclasses.VerinCanFrame;
 import com.naio.canreaderpushthebutton.parser.CanParser;
 import com.naio.canreaderpushthebutton.threads.CanDumpThread;
@@ -49,6 +53,12 @@ public class MainActivity extends FragmentActivity {
 	private CanSendThread canSendThread;
 	private final Object lock = new Object();
 	private int indexDebug;
+	private GPSCanFrame gpsCanframe;
+	private IMUCanFrame imuCanFrame;
+	private BrainCanFrame brainCanFrame;
+	private IHMCanFrame ihmCanFrame;
+	private VerinCanFrame verinCanFrame;
+	private GSMCanFrame gsmCanFrame;
 	private static final int MILLISECONDS_RUNNABLE = 10;
 
 	// 50 * MILLISECONDS_RUNNABLE for re send the keep control message
@@ -172,6 +182,12 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	
+	public void button_go_clicked(View v){
+		button_connect_clicked(v);
+		button_read_clicked(v);
+				
+	}
 
 	/**
 	 * Action performed by the READ button. Run the runnable in 1 ms ( that will
@@ -253,12 +269,12 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private void display_the_can() {
 		// display all the informations on screen
-		canParserThread.getCanParser().getGpscanframe().display_on(rl, pager);
-		canParserThread.getCanParser().getImucanframe().display_on(rl, pager);
-		canParserThread.getCanParser().getGsmcanframe().display_on(rl, pager);
-		canParserThread.getCanParser().getVerincanframe().display_on(rl, pager);
-		canParserThread.getCanParser().getIhmcanframe().display_on(rl, pager);
-		canParserThread.getCanParser().getBraincanframe().display_on(rl, pager);
+		gpsCanframe =canParserThread.getCanParser().getGpscanframe();
+		imuCanFrame = canParserThread.getCanParser().getImucanframe();
+		gsmCanFrame =canParserThread.getCanParser().getGsmcanframe();
+		verinCanFrame =canParserThread.getCanParser().getVerincanframe();
+		ihmCanFrame =canParserThread.getCanParser().getIhmcanframe();
+		brainCanFrame =canParserThread.getCanParser().getBraincanframe();
 		keep_control_of_can();
 		handler.postDelayed(runnable, MILLISECONDS_RUNNABLE);
 	}
