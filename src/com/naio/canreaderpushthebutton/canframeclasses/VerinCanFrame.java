@@ -192,7 +192,9 @@ public class VerinCanFrame extends CanFrame {
 	
 	public double getTension24v(){
 		synchronized (lock) {
-			
+			if(t24vMSB == null){
+				return 0.0;
+			}
 			return BytesFunction.fromTwoComplement(t24vMSB, t24vLSB, 16, 1000);
 		}
 	}

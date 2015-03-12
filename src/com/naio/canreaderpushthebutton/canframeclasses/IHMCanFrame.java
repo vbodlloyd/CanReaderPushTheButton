@@ -428,6 +428,9 @@ public class IHMCanFrame extends CanFrame {
 
 	public String getDataKeyboard() {
 		synchronized (lock) {
+			if(etatClavier ==null){
+				etatClavier = 0;
+			}
 			String text = Integer.toBinaryString(etatClavier);
 		
 		text = BytesFunction.fillWithZeroTheBinaryString(text);

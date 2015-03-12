@@ -364,6 +364,37 @@ public class IMUCanFrame extends CanFrame {
 		}
 
 	}
+	
+	public double getGyroX(){
+		synchronized (lock) {
+			if(gyroXMSB == null){
+				return 0.0;
+			}
+			double factor = 1024 / 32.8;
+			double valGyroX = BytesFunction.fromTwoComplement(gyroXMSB, gyroXLSB,
+					16, factor);
+			return valGyroX;
+			
+		}
+	}
+	public double getGyroZ(){
+		synchronized (lock) {
+			double factor = 1024 / 32.8;
+			double valGyroZ = BytesFunction.fromTwoComplement(gyroZMSB, gyroZLSB,
+					16, factor);
+			return valGyroZ;
+			
+		}
+	}
+	public double getGyroY(){
+		synchronized (lock) {
+			double factor = 1024 / 32.8;
+			double valGyroY = BytesFunction.fromTwoComplement(gyroYMSB, gyroYLSB,
+					16, factor);
+			return valGyroY;
+			
+		}
+	}
 
 	/**
 	 * 

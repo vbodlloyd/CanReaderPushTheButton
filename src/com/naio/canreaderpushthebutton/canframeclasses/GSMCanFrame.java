@@ -31,9 +31,14 @@ public class GSMCanFrame extends CanFrame {
 		gsmData = new ArrayList<Integer>();
 	}
 	
-	public List<Integer> getGsmData(){
+	public String getGsmData(){
 		synchronized (lock) {
-			return gsmData;
+			String text = "";
+			for (int i : gsmData) {
+				text += (char) i;
+			}
+			gsmData.clear();
+			return text;
 		}
 	}
 

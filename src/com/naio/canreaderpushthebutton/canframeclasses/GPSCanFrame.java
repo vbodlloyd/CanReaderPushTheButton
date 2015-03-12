@@ -194,7 +194,7 @@ public class GPSCanFrame extends CanFrame {
 	 * @param gps
 	 * @return
 	 */
-	private String convert_data_GPGLL(String[] gps) {
+	public String convert_data_GPGLL(String[] gps) {
 		long lat_degrees = 0;
 		double latf_degrees = 0;
 		double lonf_degrees = 0;
