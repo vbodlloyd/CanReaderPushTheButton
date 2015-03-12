@@ -1,11 +1,11 @@
-package com.naio.canreader.activities;
+package com.naio.canreaderpushthebutton.activities;
 
 import java.io.File;
 import java.lang.Process;
 import java.util.List;
 import java.util.Vector;
 
-import com.naio.canreader.R;
+import com.naio.canreaderpushthebutton.R;
 
 import com.naio.canreader.canframeclasses.GSMCanFrame;
 import com.naio.canreader.canframeclasses.VerinCanFrame;

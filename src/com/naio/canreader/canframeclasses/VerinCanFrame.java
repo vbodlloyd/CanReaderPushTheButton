@@ -7,7 +7,7 @@ package com.naio.canreader.canframeclasses;
 
 import java.util.List;
 
-import com.naio.canreader.R;
+import com.naio.canreaderpushthebutton.R;
 import com.naio.canreader.utils.BytesFunction;
 
 import android.support.v4.view.ViewPager;

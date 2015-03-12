@@ -5,8 +5,8 @@
  */
 package com.naio.canreader.threads;
 
-import com.naio.canreader.activities.MainActivity;
 import com.naio.canreader.parser.CanParser;
+import com.naio.canreaderpushthebutton.activities.MainActivity;
 
 /**
  * @author bodereau

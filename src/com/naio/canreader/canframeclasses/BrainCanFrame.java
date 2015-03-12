@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.sourceforge.juint.UInt8;
 
-import com.naio.canreader.R;
+import com.naio.canreaderpushthebutton.R;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.RelativeLayout;
