@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Vector;
 
 import com.naio.canreaderpushthebutton.R;
+import com.naio.canreaderpushthebutton.canframeclasses.GSMCanFrame;
+import com.naio.canreaderpushthebutton.canframeclasses.VerinCanFrame;
+import com.naio.canreaderpushthebutton.parser.CanParser;
+import com.naio.canreaderpushthebutton.threads.CanDumpThread;
+import com.naio.canreaderpushthebutton.threads.CanParserThread;
+import com.naio.canreaderpushthebutton.threads.CanSendThread;
+import com.naio.canreaderpushthebutton.utils.MyPagerAdapter;
 
-import com.naio.canreader.canframeclasses.GSMCanFrame;
-import com.naio.canreader.canframeclasses.VerinCanFrame;
-import com.naio.canreader.parser.CanParser;
-import com.naio.canreader.threads.CanDumpThread;
-import com.naio.canreader.threads.CanParserThread;
-import com.naio.canreader.threads.CanSendThread;
-import com.naio.canreader.utils.MyPagerAdapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -71,9 +71,7 @@ public class MainActivity extends FragmentActivity {
 	CanParser canParser = new CanParser();
 	Runnable runnable = new Runnable() {
 		public void run() {
-
 			display_the_can();
-
 		}
 	};
 	private RelativeLayout rl;
@@ -85,93 +83,51 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			if (extras.getBoolean("layout", false)) {
-				setContentView(R.layout.main_activity);
-				layoutPage = true;
-			} else {
-				set_fragment_layout();
-			}
-		} else {
-			set_fragment_layout();
-		}
+
+		setContentView(R.layout.main_activity);
+
 		canDumpThread = new CanDumpThread();
 		canParserThread = new CanParserThread(canDumpThread, this);
 		reading = false;
 		indexDebug = 0;
 		canParser = new CanParser();
-		rl = (RelativeLayout) findViewById(R.id.rl_main_activity);
-		if (!binary_added) {
+
+		executeCommand("su -c mount -o rw,remount /");
+		File file = new File("/sbin/candump");
+		executeCommand("su -c mount -o ro,remount /");
+		if (file.exists())
+			binary_added = true;
+		else {
 			executeCommand("su -c mount -o rw,remount /");
-			File file = new File("/sbin/candump");
+			executeCommand("su -c cp /storage/sdcard0/candump2 /sbin/candump");
+			executeCommand("su -c cp /storage/sdcard0/cansend2 /sbin/cansend");
+			executeCommand("su -c chmod 775 /sbin/candump");
+			executeCommand("su -c chmod 775 /sbin/cansend");
+			executeCommand("su -c insmod /storage/sdcard0/drive/can.ko");
+			executeCommand("su -c insmod /storage/sdcard0/drive/can-dev.ko");
+			executeCommand("su -c insmod /storage/sdcard0/drive/can-raw.ko");
+			executeCommand("su -c insmod /storage/sdcard0/drive/can-bcm.ko");
+			executeCommand("su -c insmod /storage/sdcard0/drive/pcan.ko");
+			executeCommand("su -c insmod /storage/sdcard0/drive/vcan.ko");
+			executeCommand("su -c insmod /storage/sdcard0/drive/peak_usb.ko");
+			executeCommand("su -c rmmod pcan");
 			executeCommand("su -c mount -o ro,remount /");
-			if (file.exists())
-				binary_added = true;
-			else {
-				executeCommand("su -c mount -o rw,remount /");
-				executeCommand("su -c cp /storage/sdcard0/candump2 /sbin/candump");
-				executeCommand("su -c cp /storage/sdcard0/cansend2 /sbin/cansend");
-				executeCommand("su -c chmod 775 /sbin/candump");
-				executeCommand("su -c chmod 775 /sbin/cansend");
-				executeCommand("su -c insmod /storage/sdcard0/drive/can.ko");
-				executeCommand("su -c insmod /storage/sdcard0/drive/can-dev.ko");
-				executeCommand("su -c insmod /storage/sdcard0/drive/can-raw.ko");
-				executeCommand("su -c insmod /storage/sdcard0/drive/can-bcm.ko");
-				executeCommand("su -c insmod /storage/sdcard0/drive/pcan.ko");
-				executeCommand("su -c insmod /storage/sdcard0/drive/vcan.ko");
-				executeCommand("su -c insmod /storage/sdcard0/drive/peak_usb.ko");
-				executeCommand("su -c rmmod pcan");
-				executeCommand("su -c mount -o ro,remount /");
-				binary_added = true;
-				new AlertDialog.Builder(this)
-						.setTitle("Information")
-						.setMessage(
-								"Vous pouvez brancher dès à présent l'interface can usb, si elle est déjà branché, rebranchez la.")
-						.setPositiveButton(android.R.string.yes,
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// continue with delete
-									}
-								}).setIcon(android.R.drawable.ic_dialog_info)
-						.show();
-			}
+			binary_added = true;
+			new AlertDialog.Builder(this)
+					.setTitle("Information")
+					.setMessage(
+							"Vous pouvez brancher dès à présent l'interface can usb, si elle est déjà branché, rebranchez la.")
+					.setPositiveButton(android.R.string.yes,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// continue with delete
+								}
+							}).setIcon(android.R.drawable.ic_dialog_info)
+					.show();
 		}
-
 	}
 
-	/**
-	 * 
-	 */
-	private void set_fragment_layout() {
-		setContentView(R.layout.viewpager);// Création de la liste de
-		// Fragments que fera
-		// défiler le PagerAdapter
-		List fragments = new Vector();
-
-		// Ajout des Fragments dans la liste
-		fragments.add(Fragment.instantiate(this,
-				BlocIMUActivity.class.getName()));
-		fragments.add(Fragment.instantiate(this,
-				BlocGPSActivity.class.getName()));
-		fragments.add(Fragment.instantiate(this,
-				BlocIHMActivity.class.getName()));
-		fragments.add(Fragment.instantiate(this,
-				BlocVerinActivity.class.getName()));
-		fragments.add(Fragment.instantiate(this,
-				BlocTensionActivity.class.getName()));
-		// Création de l'adapter qui s'occupera de l'affichage de la
-		// liste de Fragments
-		this.mPagerAdapter = new MyPagerAdapter(
-				super.getSupportFragmentManager(), fragments);
-
-		pager = (ViewPager) super.findViewById(R.id.viewpager);
-		pager.setOffscreenPageLimit(4);
-		// Affectation de l'adapter au ViewPager
-		pager.setAdapter(this.mPagerAdapter);
-		layoutPage = false;
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -216,20 +172,6 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * @param b
-	 * 
-	 */
-	private void change_activity_layout(boolean b) {
-		canParserThread.setStop(false);
-		canParserThread.interrupt();
-		canDumpThread.quit();
-		handler.removeCallbacks(runnable);
-		Intent intent = getIntent();
-		finish();
-		intent.putExtra("layout", b);
-		startActivity(intent);
-	}
 
 	/**
 	 * Action performed by the READ button. Run the runnable in 1 ms ( that will

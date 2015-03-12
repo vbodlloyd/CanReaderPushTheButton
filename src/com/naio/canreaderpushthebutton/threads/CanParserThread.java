@@ -3,10 +3,10 @@
  * by bodereau
  * 
  */
-package com.naio.canreader.threads;
+package com.naio.canreaderpushthebutton.threads;
 
-import com.naio.canreader.parser.CanParser;
 import com.naio.canreaderpushthebutton.activities.MainActivity;
+import com.naio.canreaderpushthebutton.parser.CanParser;
 
 /**
  * @author bodereau

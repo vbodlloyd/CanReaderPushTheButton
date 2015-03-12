@@ -3,7 +3,7 @@
  * by bodereau
  * 
  */
-package com.naio.canreader.utils;
+package com.naio.canreaderpushthebutton.utils;
 
 /**
  * MyPagerAdapter display the fragments ( BlocGPSActivity, BlocIHMActivity, etc)
