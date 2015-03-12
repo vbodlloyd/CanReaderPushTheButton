@@ -3,12 +3,6 @@ package com.naio.canreaderpushthebutton.canframeclasses;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.naio.canreaderpushthebutton.R;
-
-import android.support.v4.view.ViewPager;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 /**
  * Display the data of the GSM
  * 

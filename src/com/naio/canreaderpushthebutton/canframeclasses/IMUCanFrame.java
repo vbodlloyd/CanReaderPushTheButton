@@ -1,17 +1,9 @@
 package com.naio.canreaderpushthebutton.canframeclasses;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
-import com.naio.canreaderpushthebutton.R;
 import com.naio.canreaderpushthebutton.utils.BytesFunction;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 /**
  * Display the data of the IMU

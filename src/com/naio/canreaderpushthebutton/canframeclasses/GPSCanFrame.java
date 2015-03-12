@@ -3,12 +3,6 @@ package com.naio.canreaderpushthebutton.canframeclasses;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.naio.canreaderpushthebutton.R;
-
-import android.support.v4.view.ViewPager;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 /**
  * GPSCanFrame display the data of the GPS: the latitude, longitude, UTC time,
  * and the precision of the gps with the PDOP, HDOP and VDOP and the number of

@@ -4,11 +4,6 @@ import java.util.List;
 
 import net.sourceforge.juint.UInt8;
 
-import com.naio.canreaderpushthebutton.R;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 /**
  * Display the data of the Brain ( yet only the cpu temperature )

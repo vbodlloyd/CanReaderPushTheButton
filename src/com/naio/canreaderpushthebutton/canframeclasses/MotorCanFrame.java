@@ -33,65 +33,38 @@ public class MotorCanFrame extends CanFrame {
 		return this;
 	}
 
-	public void action(RelativeLayout rl) {
-		switch (idMess) {
-		case "0000":
-			display_data_consigne(rl);
-			break;
-		case "0001":
-			display_data_courant(rl);
-			break;
-		case "0010":
-			display_data_couple(rl);
-			break;
-		case "0011":
-			display_data_temperature(rl);
-			break;
-		case "0100":
-			display_data_version(rl);
-			break;
-		case "0101":
-			display_data_odom(rl);
-			break;
-		case "1111":
-			display_data_part(rl);
-			break;
-		default:
-			break;
-		}
-	}
 
-	private void display_data_part(RelativeLayout rl) {
+	private void display_data_part() {
 		partMSB = getData().get(0);
 		partLSB = getData().get(1);
 	}
 
-	private void display_data_odom(RelativeLayout rl) {
+	private void display_data_odom() {
 		nbImpOdom = getData().get(0);
 		odomStatut = getData().get(1);
 		
 
 	}
 
-	private void display_data_version(RelativeLayout rl) {
+	private void display_data_version() {
 		versionMaj = getData().get(0);
 		versionMin = getData().get(1);
 
 	}
 
-	private void display_data_temperature(RelativeLayout rl) {
+	private void display_data_temperature() {
 		temperature = getData().get(0);
 
 	}
 
-	private void display_data_couple(RelativeLayout rl) {
+	private void display_data_couple() {
 		couple = getData().get(0);
 		vitesse = getData().get(1);
 		statut = getData().get(2);
 
 	}
 
-	private void display_data_courant(RelativeLayout rl) {
+	private void display_data_courant() {
 		courantMax = getData().get(0);
 		tension = getData().get(1);
 		rampeDemarrage = getData().get(2);
@@ -99,7 +72,7 @@ public class MotorCanFrame extends CanFrame {
 
 	}
 
-	private void display_data_consigne(RelativeLayout rl) {
+	private void display_data_consigne() {
 		consigne = getData().get(0);
 		sensRotation = getData().get(1);
 
