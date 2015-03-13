@@ -14,8 +14,8 @@
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Utilisation : \n-Appuyez sur le bouton."
-            android:textSize="50dp" />
+            android:text="Utilisation : \n-Après vous êtes assuré que l'interface can était allumé et qu'une telecommande était connectée, appuyer sur le bouton."
+            android:textSize="30dp" />
     </ScrollView>
 
     <Button

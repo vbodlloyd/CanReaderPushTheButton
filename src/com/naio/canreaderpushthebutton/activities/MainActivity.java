@@ -20,6 +20,8 @@ import com.naio.canreaderpushthebutton.threads.CanSendThread;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -32,6 +34,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 /**
@@ -68,6 +72,7 @@ public class MainActivity extends FragmentActivity {
 	private static final Integer TEST_IHM = 4;
 	private static final Integer TEST_IMU = 5;
 	private static final Integer TEST_BRAIN = 6;
+	private static final Integer TEST_ODO = 7;
 	private static final Integer FIN = 20;
 	private static Integer stateIn = 0;
 	private static boolean clickOnScreen = false;
@@ -103,6 +108,21 @@ public class MainActivity extends FragmentActivity {
 	private boolean is_test_gps_good;
 	private boolean is_test_brain_good;
 	private int cptStateGps;
+	private boolean is_test_odo_good;
+	private int cptStateOnClick;
+	private LinearLayout layout_result;
+	private Bitmap check;
+	private Bitmap cross;
+	private ImageView im_brain;
+	private ImageView im_gps;
+	private ImageView im_gsm;
+	private ImageView im_ihm;
+	private ImageView im_imu;
+	private ImageView im_odo;
+	private ImageView im_son;
+	private ImageView im_tension;
+	private ImageView im_verin;
+	private Button reset_button;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +136,22 @@ public class MainActivity extends FragmentActivity {
 		cptStateGps = 0;
 		indexDebug = 0;
 		canParser = new CanParser();
+		layout_result = (LinearLayout) findViewById(R.id.layout_result);
+		layout_result.setVisibility(View.GONE);
 		go_button = (Button) findViewById(R.id.button_connect_main_activity);
+		reset_button = (Button) findViewById(R.id.button_reset_main_activity);
+		reset_button.setVisibility(View.GONE);
+		check = BitmapFactory.decodeResource(this.getResources(), R.drawable.vcheck);
+		cross = BitmapFactory.decodeResource(this.getResources(), R.drawable.cross2);
+		im_brain = (ImageView) findViewById(R.id.im_brain);
+		im_gps = (ImageView) findViewById(R.id.im_gps);
+		im_gsm = (ImageView) findViewById(R.id.im_gsm);
+		im_ihm = (ImageView) findViewById(R.id.im_ihm);
+		im_imu = (ImageView) findViewById(R.id.im_imu);
+		im_odo = (ImageView) findViewById(R.id.im_odo);
+		im_son = (ImageView) findViewById(R.id.im_son);
+		im_tension = (ImageView) findViewById(R.id.im_tension);
+		im_verin = (ImageView) findViewById(R.id.im_verin);
 		state = 0;
 		executeCommand("su -c mount -o rw,remount /");
 		File file = new File("/sbin/candump");
@@ -145,7 +180,6 @@ public class MainActivity extends FragmentActivity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// continue with delete
 								}
 							}).setIcon(android.R.drawable.ic_dialog_info)
 					.show();
@@ -222,8 +256,15 @@ public class MainActivity extends FragmentActivity {
 		canParserThread.setStop(false);
 		canDumpThread.interrupt();
 		canParserThread.interrupt();
+		go_button.setVisibility(View.VISIBLE);
+		layout_result.setVisibility(View.GONE);
+		reset_button.setVisibility(View.GONE);
+		state = BEGINNING;
+		stateIn =0;
+		cptStateGps=0;
+		cptStateOnClick=0;
 		handler.removeCallbacks(runnable);
-		go_button.setText("Go");
+		go_button.setText("Appuyer sur ce bouton une fois vous êtes assuré d'avoir une manette connectée");
 		// the sleep here is just because there is a sleep when the user press
 		// the READ button, so do the STOP.
 		try {
@@ -280,6 +321,8 @@ public class MainActivity extends FragmentActivity {
 			test_gps();
 		} else if (state == TEST_BRAIN) {
 			test_brain();
+		} else if (state == TEST_ODO) {
+			test_odo();
 		} else if (state == FIN) {
 			display_result();
 			handler.removeCallbacks(runnable);
@@ -297,7 +340,8 @@ public class MainActivity extends FragmentActivity {
 		} else {
 			is_test_brain_good = false;
 		}
-		state = FIN;
+		state = TEST_ODO;
+		stateIn = 0;
 	}
 
 	private void test_gps() {
@@ -306,41 +350,32 @@ public class MainActivity extends FragmentActivity {
 			go_button.setText("Test GPS");
 			String text = "";
 			List<Integer> data = new ArrayList<Integer>();
-			data.addAll(canParserThread.getCanParser().getGpscanframe().getGpsData());
+			data.addAll(canParserThread.getCanParser().getGpscanframe()
+					.getGpsData());
 			for (int a : data) {
 				text += (char) a;
 			}
-			Log.e("gps",text);
+			Log.e("gps", text);
 			String[] gps = text.split(",");
-			if (gps.length <= 2) {
+			/*if (gps.length <= 5) {
 				cptStateGps++;
 				if (cptStateGps > 5) {
 					stateIn++;
 					is_test_gps_good = false;
 				}
 				break;
-			}
+			}*/
 			if (gps[0].contains("GPGLL")) {
-				String gpsInfo = gpsCanframe.convert_data_GPGLL(gps);
-				if (gpsInfo.contains("Lat:0")) {
-					is_test_gps_good = false;
-				} else {
 					is_test_gps_good = true;
-				}
 				stateIn++;
-			} else if(gps[0].contains("GPGSV")){
-				if(Integer.parseInt(gps[3]) > 3){
+			} else if (gps[0].contains("GP")) {
 					is_test_gps_good = true;
-				} else {
-					is_test_gps_good = false;
-				}
 				stateIn++;
-				}
-			else{
+			} else {
 				cptStateGps++;
 				stateIn = 0;
 			}
-			if (cptStateGps > 5) {
+			if (cptStateGps > 10) {
 				stateIn++;
 				is_test_gps_good = false;
 			}
@@ -348,6 +383,7 @@ public class MainActivity extends FragmentActivity {
 		case 1:
 			state = TEST_BRAIN;
 			stateIn = 0;
+			cptStateGps = 0;
 			break;
 		}
 	}
@@ -356,7 +392,7 @@ public class MainActivity extends FragmentActivity {
 		switch (stateIn) {
 		case 0:
 			go_button
-					.setText("Vous avez 5 secondes pour bouger de façon extremement violente la centrale inertielle");
+					.setText("Vous avez 10 secondes pour faire bouger la centrale inertielle");
 			stateIn++;
 			break;
 		case 1:
@@ -389,11 +425,121 @@ public class MainActivity extends FragmentActivity {
 		case 4:
 			if (imuCanFrame.getGyroX() >= 1 || imuCanFrame.getGyroX() <= -1) {
 				is_test_imu_good = true;
+				stateIn = 0;
+				state = TEST_GPS;
+				break;
+			}
+			stateIn++;
+			break;
+		case 5:
+			if (imuCanFrame.getGyroX() >= 1 || imuCanFrame.getGyroX() <= -1) {
+				is_test_imu_good = true;
+				stateIn = 0;
+				state = TEST_GPS;
+				break;
+			}
+			stateIn++;
+			break;
+		case 6:
+			if (imuCanFrame.getGyroX() >= 1 || imuCanFrame.getGyroX() <= -1) {
+				is_test_imu_good = true;
+				stateIn = 0;
+				state = TEST_GPS;
+				break;
+			}
+			stateIn++;
+			break;
+		case 7:
+			if (imuCanFrame.getGyroX() >= 1 || imuCanFrame.getGyroX() <= -1) {
+				is_test_imu_good = true;
+				stateIn = 0;
+				state = TEST_GPS;
+				break;
+			}
+			stateIn++;
+			break;
+		case 8:
+			if (imuCanFrame.getGyroX() >= 1 || imuCanFrame.getGyroX() <= -1) {
+				is_test_imu_good = true;
+				stateIn = 0;
+				state = TEST_GPS;
+				break;
+			}
+			stateIn++;
+			break;
+		case 9:
+			if (imuCanFrame.getGyroX() >= 1 || imuCanFrame.getGyroX() <= -1) {
+				is_test_imu_good = true;
+				stateIn = 0;
+				state = TEST_GPS;
+				break;
+			}
+			stateIn++;
+			break;
+
+		case 10:
+			if (imuCanFrame.getGyroX() >= 1 || imuCanFrame.getGyroX() <= -1) {
+				is_test_imu_good = true;
 			} else {
 				is_test_imu_good = false;
 			}
 			stateIn = 0;
 			state = TEST_GPS;
+			break;
+		}
+	}
+
+	private void test_odo() {
+		switch (stateIn) {
+		case 0:
+			VerinCanFrame.resetCpt();
+			go_button
+					.setText("Vous avez 10 secondes pour faire avancer/reculer le robot sur 2 metres");
+			stateIn++;
+			break;
+		case 1:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 2:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 3:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 4:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 5:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 6:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 7:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 8:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 9:
+			verinCanFrame.getOdom();
+			stateIn++;
+			break;
+		case 10:
+			if (verinCanFrame.getOdom())
+				is_test_odo_good = true;
+			else
+				is_test_odo_good = false;
+			state = FIN;
+			stateIn = 0;
 			break;
 		}
 	}
@@ -404,6 +550,7 @@ public class MainActivity extends FragmentActivity {
 			go_button.setText("Test IHM");
 			cansend("383", "02.10.10.10.02.32");
 			stateIn++;
+			cptStateOnClick =0;
 			break;
 		case 1:
 			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -425,20 +572,25 @@ public class MainActivity extends FragmentActivity {
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(
-					"Avez vous entendu un son ( genre *bip* *bip* *bip* )?")
-					.setPositiveButton("Ah que oui", dialogClickListener)
-					.setNegativeButton("Ah que non", dialogClickListener)
+					"Avez vous entendu un son (*bip* *bip* *bip* )?")
+					.setPositiveButton("Oui", dialogClickListener)
+					.setNegativeButton("Non", dialogClickListener)
 					.show();
 
 			stateIn = 20;
 			break;
 		case 20:
+			cptStateOnClick++;
 			if (clickOnScreen)
 				stateIn = 2;
+			if(cptStateOnClick >= 10){
+				cptStateOnClick =0;
+				stateIn = 1;
+			}
 			break;
 		case 2:
 			go_button
-					.setText("Vous avez 5 secondes pour appuyer, en le maintenant, sur un bouton de l'ihm");
+					.setText("Vous avez 10 secondes pour appuyer, en le maintenant, sur un bouton de l'ihm");
 			memoryKeyboardState = ihmCanFrame.getDataKeyboard();
 			stateIn++;
 			break;
@@ -481,6 +633,61 @@ public class MainActivity extends FragmentActivity {
 		case 7:
 			if (!ihmCanFrame.getDataKeyboard().contains(memoryKeyboardState)) {
 				is_test_ihm_good = true;
+				stateIn = 0;
+				state = TEST_IMU;
+				break;
+			}
+			stateIn++;
+			break;
+		case 8:
+			if (!ihmCanFrame.getDataKeyboard().contains(memoryKeyboardState)) {
+				is_test_ihm_good = true;
+				stateIn = 0;
+				state = TEST_IMU;
+				break;
+			}
+			stateIn++;
+			break;
+		case 9:
+			if (!ihmCanFrame.getDataKeyboard().contains(memoryKeyboardState)) {
+				is_test_ihm_good = true;
+				stateIn = 0;
+				state = TEST_IMU;
+				break;
+			}
+			stateIn++;
+			break;
+		case 10:
+			if (!ihmCanFrame.getDataKeyboard().contains(memoryKeyboardState)) {
+				is_test_ihm_good = true;
+				stateIn = 0;
+				state = TEST_IMU;
+				break;
+			}
+			stateIn++;
+			break;
+		case 11:
+			if (!ihmCanFrame.getDataKeyboard().contains(memoryKeyboardState)) {
+				is_test_ihm_good = true;
+				stateIn = 0;
+				state = TEST_IMU;
+				break;
+			}
+			stateIn++;
+			break;
+		case 12:
+			if (!ihmCanFrame.getDataKeyboard().contains(memoryKeyboardState)) {
+				is_test_ihm_good = true;
+				stateIn = 0;
+				state = TEST_IMU;
+				break;
+			}
+			stateIn++;
+			break;
+
+		case 13:
+			if (!ihmCanFrame.getDataKeyboard().contains(memoryKeyboardState)) {
+				is_test_ihm_good = true;
 			} else {
 				is_test_ihm_good = false;
 			}
@@ -521,6 +728,7 @@ public class MainActivity extends FragmentActivity {
 		case 6:
 			button_retour_position_clicked(null);
 			pos3 = verinCanFrame.getRetourPosition();
+			Log.e("posverin",pos1+"--"+pos2+"---"+pos3+"---"+(pos1!=pos2)+"---"+(pos2!=pos3)+"---"+(false && false));
 			if (pos1 != pos2 && pos2 != pos3) {
 				is_test_verin_good = true;
 			} else
@@ -531,7 +739,7 @@ public class MainActivity extends FragmentActivity {
 			stateIn++;
 			break;
 		case 7:
-			
+
 			if (verinCanFrame.getTension24v() > 20) {
 				is_test_tension_good = true;
 			} else
@@ -578,7 +786,10 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void display_result() {
-		String text = "Resultat : \n" + "Brain = ";
+		go_button.setVisibility(View.GONE);
+		layout_result.setVisibility(View.VISIBLE);
+		reset_button.setVisibility(View.VISIBLE);
+		/*String text = "Resultat : \n" + "Brain = ";
 		if (is_test_brain_good)
 			text += " en fonction ";
 		else
@@ -618,7 +829,48 @@ public class MainActivity extends FragmentActivity {
 			text += " en fonction ";
 		else
 			text += " erreur ";
-		go_button.setText(text);
+		text += "\nOdo =";
+		if (is_test_odo_good)
+			text += " en fonction ";
+		else
+			text += " erreur ";
+		go_button.setText(text);*/
+		if (is_test_brain_good)
+			im_brain.setImageBitmap(check);
+		else
+			im_brain.setImageBitmap(cross);
+		if (is_test_gps_good)
+			im_gps.setImageBitmap(check);
+		else
+			im_gps.setImageBitmap(cross);
+		if (is_test_gsm_good)
+			im_gsm.setImageBitmap(check);
+		else
+			im_gsm.setImageBitmap(cross);
+		if (is_test_ihm_good)
+			im_ihm.setImageBitmap(check);
+		else
+			im_ihm.setImageBitmap(cross);
+		if (is_test_imu_good)
+			im_imu.setImageBitmap(check);
+		else
+			im_imu.setImageBitmap(cross);
+		if (is_test_son_good)
+			im_son.setImageBitmap(check);
+		else
+			im_son.setImageBitmap(cross);
+		if (is_test_tension_good)
+			im_tension.setImageBitmap(check);
+		else
+			im_tension.setImageBitmap(cross);
+		if (is_test_verin_good)
+			im_verin.setImageBitmap(check);
+		else
+			im_verin.setImageBitmap(cross);
+		if (is_test_odo_good)
+			im_odo.setImageBitmap(check);
+		else
+			im_odo.setImageBitmap(cross);
 	}
 
 	/**

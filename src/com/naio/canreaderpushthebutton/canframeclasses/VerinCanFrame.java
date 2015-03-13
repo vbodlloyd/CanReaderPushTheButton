@@ -160,6 +160,56 @@ public class VerinCanFrame extends CanFrame {
 
 	}
 
+	public boolean getOdom() {
+		synchronized (lock) {
+			if(lectureODO == null){
+				lectureODO = 0;
+			}
+			String text = Integer.toBinaryString(lectureODO);
+			String[] data = BytesFunction.fillWithZeroTheBinaryString(text)
+					.split("(?<!^)");
+			int ard = Integer.parseInt(data[7]);
+			int avd = Integer.parseInt(data[6]);
+			int arg = Integer.parseInt(data[5]);
+			int avg = Integer.parseInt(data[4]);
+			if (data[7].contains("1") && VerinCanFrame.state_ard) {
+				VerinCanFrame.cptArd += 1;
+				VerinCanFrame.state_ard = false;
+			}
+			if (data[6].contains("1") && VerinCanFrame.state_avd) {
+				VerinCanFrame.cptAvd += 1;
+				VerinCanFrame.state_avd = false;
+			}
+			if (data[5].contains("1") && VerinCanFrame.state_arg) {
+				VerinCanFrame.cptArg += 1;
+				VerinCanFrame.state_arg = false;
+			}
+			if (data[4].contains("1") && VerinCanFrame.state_avg) {
+				VerinCanFrame.cptAvg += 1;
+				VerinCanFrame.state_avg = false;
+			}
+			if (data[7].contains("0") && !VerinCanFrame.state_ard) {
+				VerinCanFrame.state_ard = true;
+			}
+			if (data[6].contains("0") && !VerinCanFrame.state_avd) {
+				VerinCanFrame.state_avd = true;
+			}
+			if (data[5].contains("0") && !VerinCanFrame.state_arg) {
+				VerinCanFrame.state_arg = true;
+			}
+			if (data[4].contains("0") && !VerinCanFrame.state_avg) {
+				VerinCanFrame.state_avg = true;
+			}
+			Log.e("odo",ard+"--"+cptArg+"-...-"+arg +"--"+cptArg+"-...-"+avd+"--"+cptAvg+"-...-"+avg +"--"+cptAvg);
+			if ((cptArg -ard) <= ( cptAvd - avd +3 ) && (cptArg -ard) >= ( cptAvd - avd -3 )
+					&& (cptArg - arg) <= (cptAvg -avg +3) && (cptArg - arg) >= (cptAvg -avg -3) && cptAvg > 0 && cptArg > 0 && cptAvd >0 && cptArd >0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
 	public String getOdo() {
 		synchronized (lock) {
 			String text = Integer.toBinaryString(lectureODO);
@@ -227,6 +277,8 @@ public class VerinCanFrame extends CanFrame {
 
 	public Integer getRetourPosition() {
 		synchronized (lock) {
+			if(retourPosition == null)
+				return 0;
 			return retourPosition;
 
 		}
@@ -270,18 +322,19 @@ public class VerinCanFrame extends CanFrame {
 	 */
 	public static void resetCpt() {
 
-		VerinCanFrame.cptArd = 0;
-		VerinCanFrame.cptAvg = 0;
-		VerinCanFrame.cptArg = 0;
-		VerinCanFrame.cptAvd = 0;
-		VerinCanFrame.cptArd = 0;
-		VerinCanFrame.cptAvg = 0;
-		VerinCanFrame.cptArg = 0;
-		VerinCanFrame.cptAvd = 0;
-		VerinCanFrame.state_ard = true;
-		VerinCanFrame.state_avg = true;
-		VerinCanFrame.state_arg = true;
-		VerinCanFrame.state_avd = true;
 
+			VerinCanFrame.cptArd = 0;
+			VerinCanFrame.cptAvg = 0;
+			VerinCanFrame.cptArg = 0;
+			VerinCanFrame.cptAvd = 0;
+			VerinCanFrame.cptArd = 0;
+			VerinCanFrame.cptAvg = 0;
+			VerinCanFrame.cptArg = 0;
+			VerinCanFrame.cptAvd = 0;
+			VerinCanFrame.state_ard = true;
+			VerinCanFrame.state_avg = true;
+			VerinCanFrame.state_arg = true;
+			VerinCanFrame.state_avd = true;
+		
 	}
 }

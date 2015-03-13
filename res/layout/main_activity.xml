@@ -12,7 +12,223 @@
         android:layout_height="@dimen/nexus7_700px_h"
         android:layout_centerInParent="true"
         android:onClick="button_go_clicked"
-        android:text="Go" 
-        android:textSize="25dp"/>
+        android:text="Appuyer sur ce bouton une fois vous êtes assuré d&apos;avoir une manette connectée"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/button_reset_main_activity"
+        android:layout_width="@dimen/nexus7_400px_w"
+        android:layout_height="@dimen/nexus7_100px_h"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="button_read_clicked"
+        android:text="Recommencer"
+        android:textSize="25dp" />
+
+    <LinearLayout
+        android:id="@+id/layout_result"
+        android:layout_width="@dimen/nexus7_1200px_w"
+        android:layout_height="@dimen/nexus7_700px_h"
+        android:layout_centerInParent="true"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="BRAIN "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_brain"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="GPS "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_gps"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="GSM "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_gsm"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="IHM "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_ihm"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="IMU "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_imu"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Son "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_son"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Tension "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_tension"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Verin "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_verin"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="ODO "
+                android:textSize="25dp" />
+
+            <ImageView
+                android:id="@+id/im_odo"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:src="@drawable/vcheck" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
