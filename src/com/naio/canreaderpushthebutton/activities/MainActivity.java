@@ -2,6 +2,8 @@ package com.naio.canreaderpushthebutton.activities;
 
 import java.io.File;
 import java.lang.Process;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.naio.canreaderpushthebutton.R;
 import com.naio.canreaderpushthebutton.canframeclasses.BrainCanFrame;
@@ -23,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -302,10 +305,12 @@ public class MainActivity extends FragmentActivity {
 		case 0:
 			go_button.setText("Test GPS");
 			String text = "";
-			for (int a : gpsCanframe.getGpsData()) {
+			List<Integer> data = new ArrayList<Integer>();
+			data.addAll(canParserThread.getCanParser().getGpscanframe().getGpsData());
+			for (int a : data) {
 				text += (char) a;
 			}
-
+			Log.e("gps",text);
 			String[] gps = text.split(",");
 			if (gps.length <= 2) {
 				cptStateGps++;
@@ -323,7 +328,15 @@ public class MainActivity extends FragmentActivity {
 					is_test_gps_good = true;
 				}
 				stateIn++;
-			} else {
+			} else if(gps[0].contains("GPGSV")){
+				if(Integer.parseInt(gps[3]) > 3){
+					is_test_gps_good = true;
+				} else {
+					is_test_gps_good = false;
+				}
+				stateIn++;
+				}
+			else{
 				cptStateGps++;
 				stateIn = 0;
 			}
@@ -513,6 +526,12 @@ public class MainActivity extends FragmentActivity {
 			} else
 				is_test_verin_good = false;
 			cansend("400", "00");
+			cansend("406", "R");
+			cansend("407", "R");
+			stateIn++;
+			break;
+		case 7:
+			
 			if (verinCanFrame.getTension24v() > 20) {
 				is_test_tension_good = true;
 			} else
@@ -554,6 +573,8 @@ public class MainActivity extends FragmentActivity {
 		brainCanFrame = canParserThread.getCanParser().getBraincanframe();
 		state = TEST_GSM;
 		clickOnScreen = false;
+		cptStateGps = 0;
+		stateIn = 0;
 	}
 
 	private void display_result() {
