@@ -6,16 +6,34 @@
     android:keepScreenOn="true"
     tools:context="com.naio.canreaderpushthebutton.activities.MainActivity" >
 
-    <Button
-        android:id="@+id/button_connect_main_activity"
+    <TextView
+        android:id="@+id/txt_appuyer"
         android:layout_width="@dimen/nexus7_1200px_w"
         android:layout_height="@dimen/nexus7_700px_h"
         android:layout_centerInParent="true"
+        android:text="Appuyer sur le bouton une fois vous êtes assuré d&apos;avoir une manette connectée"
+        android:textSize="25dp" />
+    
+    <Button
+        android:id="@+id/button_connect_main_activity"
+        android:layout_width="@dimen/nexus7_500px_w"
+        android:layout_height="@dimen/nexus7_300px_w"
+        android:layout_centerInParent="true"
         android:onClick="button_go_clicked"
-        android:text="Appuyer sur ce bouton une fois vous êtes assuré d&apos;avoir une manette connectée"
+        android:text="Debuter le test"
+        android:background="@drawable/buttonselector"
+        android:textSize="25dp" />
+    
+    <TextView
+        android:id="@+id/txt_test"
+        android:layout_width="@dimen/nexus7_1200px_w"
+        android:layout_height="@dimen/nexus7_700px_h"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="..."
         android:textSize="25dp" />
 
-    <Button
+    <TextView
         android:id="@+id/button_reset_main_activity"
         android:layout_width="@dimen/nexus7_400px_w"
         android:layout_height="@dimen/nexus7_100px_h"
@@ -23,7 +41,12 @@
         android:layout_alignParentRight="true"
         android:onClick="button_read_clicked"
         android:text="Recommencer"
-        android:textSize="25dp" />
+        android:clickable="true"
+        android:textSize="25dp"
+        android:gravity="center"
+        android:background="@drawable/buttonselector"
+        android:drawableLeft="@drawable/restart2"
+        android:padding="2dp" />
 
     <LinearLayout
         android:id="@+id/layout_result"

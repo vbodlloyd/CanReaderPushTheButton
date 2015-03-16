@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 /**
  * 
@@ -122,7 +123,9 @@ public class MainActivity extends FragmentActivity {
 	private ImageView im_son;
 	private ImageView im_tension;
 	private ImageView im_verin;
-	private Button reset_button;
+	private TextView reset_button;
+	private TextView go_text;
+	private TextView test_text;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,8 +142,11 @@ public class MainActivity extends FragmentActivity {
 		layout_result = (LinearLayout) findViewById(R.id.layout_result);
 		layout_result.setVisibility(View.GONE);
 		go_button = (Button) findViewById(R.id.button_connect_main_activity);
-		reset_button = (Button) findViewById(R.id.button_reset_main_activity);
+		go_text = (TextView) findViewById(R.id.txt_appuyer);
+		test_text = (TextView) findViewById(R.id.txt_test);
+		reset_button = (TextView) findViewById(R.id.button_reset_main_activity);
 		reset_button.setVisibility(View.GONE);
+		test_text.setVisibility(View.GONE);
 		check = BitmapFactory.decodeResource(this.getResources(), R.drawable.vcheck);
 		cross = BitmapFactory.decodeResource(this.getResources(), R.drawable.cross2);
 		im_brain = (ImageView) findViewById(R.id.im_brain);
@@ -247,7 +253,7 @@ public class MainActivity extends FragmentActivity {
 			canDumpThread.start();
 			canParserThread.start();
 			cansend("00F", KEEP_CONTROL_CAN_LOOP_MESSAGE);
-			handler.postDelayed(runnable, MILLISECONDS_RUNNABLE);
+			handler.postDelayed(runnable, 1);
 			reading = true;
 			return;
 		}
@@ -257,6 +263,8 @@ public class MainActivity extends FragmentActivity {
 		canDumpThread.interrupt();
 		canParserThread.interrupt();
 		go_button.setVisibility(View.VISIBLE);
+		go_text.setVisibility(View.VISIBLE);
+		test_text.setVisibility(View.GONE);
 		layout_result.setVisibility(View.GONE);
 		reset_button.setVisibility(View.GONE);
 		state = BEGINNING;
@@ -264,7 +272,7 @@ public class MainActivity extends FragmentActivity {
 		cptStateGps=0;
 		cptStateOnClick=0;
 		handler.removeCallbacks(runnable);
-		go_button.setText("Appuyer sur ce bouton une fois vous êtes assuré d'avoir une manette connectée");
+		//go_button.setText("Appuyer sur ce bouton une fois vous êtes assuré d'avoir une manette connectée");
 		// the sleep here is just because there is a sleep when the user press
 		// the READ button, so do the STOP.
 		try {
@@ -272,6 +280,13 @@ public class MainActivity extends FragmentActivity {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		//we stop the application when onPause because an other app using the can could be running
+		super.onPause();
+		onBackPressed();
 	}
 
 	@Override
@@ -334,7 +349,8 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void test_brain() {
-		go_button.setText("Test Brain");
+		
+		test_text.setText("Test Brain");
 		if (brainCanFrame.getTemperature() != null) {
 			is_test_brain_good = true;
 		} else {
@@ -347,7 +363,7 @@ public class MainActivity extends FragmentActivity {
 	private void test_gps() {
 		switch (stateIn) {
 		case 0:
-			go_button.setText("Test GPS");
+			test_text.setText("Test GPS");
 			String text = "";
 			List<Integer> data = new ArrayList<Integer>();
 			data.addAll(canParserThread.getCanParser().getGpscanframe()
@@ -391,7 +407,7 @@ public class MainActivity extends FragmentActivity {
 	private void test_imu() {
 		switch (stateIn) {
 		case 0:
-			go_button
+			test_text
 					.setText("Vous avez 10 secondes pour faire bouger la centrale inertielle");
 			stateIn++;
 			break;
@@ -493,7 +509,7 @@ public class MainActivity extends FragmentActivity {
 		switch (stateIn) {
 		case 0:
 			VerinCanFrame.resetCpt();
-			go_button
+			test_text
 					.setText("Vous avez 10 secondes pour faire avancer/reculer le robot sur 2 metres");
 			stateIn++;
 			break;
@@ -547,7 +563,7 @@ public class MainActivity extends FragmentActivity {
 	private void test_ihm() {
 		switch (stateIn) {
 		case 0:
-			go_button.setText("Test IHM");
+			test_text.setText("Test IHM");
 			cansend("383", "02.10.10.10.02.32");
 			stateIn++;
 			cptStateOnClick =0;
@@ -589,7 +605,7 @@ public class MainActivity extends FragmentActivity {
 			}
 			break;
 		case 2:
-			go_button
+			test_text
 					.setText("Vous avez 10 secondes pour appuyer, en le maintenant, sur un bouton de l'ihm");
 			memoryKeyboardState = ihmCanFrame.getDataKeyboard();
 			stateIn++;
@@ -700,7 +716,7 @@ public class MainActivity extends FragmentActivity {
 	private void test_verin() {
 		switch (stateIn) {
 		case 0:
-			go_button.setText("Test Verin");
+			test_text.setText("Test Verin");
 			cansend("400", "32");
 			stateIn++;
 			break;
@@ -753,7 +769,7 @@ public class MainActivity extends FragmentActivity {
 	private void test_gsm() {
 		switch (stateIn) {
 		case 0:
-			go_button.setText("Test GSM");
+			test_text.setText("Test GSM");
 			button_statut_gsm_clicked(null);
 			stateIn++;
 			break;
@@ -761,7 +777,7 @@ public class MainActivity extends FragmentActivity {
 			stateIn++;
 			break;
 		case 2:
-			if (gsmCanFrame.getGsmData().contains("READY")) {
+			if (gsmCanFrame.getGsmData().contains("READY") || gsmCanFrame.getGsmData().contains("PIN")) {
 				is_test_gsm_good = true;
 			} else
 				is_test_gsm_good = false;
@@ -772,7 +788,10 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void init_protocol() {
-		go_button.setText("Initialisation des tests");
+		test_text.setText("Initialisation des tests");
+		go_button.setVisibility(View.GONE);
+		go_text.setVisibility(View.GONE);
+		test_text.setVisibility(View.VISIBLE);
 		gpsCanframe = canParserThread.getCanParser().getGpscanframe();
 		imuCanFrame = canParserThread.getCanParser().getImucanframe();
 		gsmCanFrame = canParserThread.getCanParser().getGsmcanframe();
@@ -786,7 +805,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void display_result() {
-		go_button.setVisibility(View.GONE);
+		test_text.setVisibility(View.GONE);
 		layout_result.setVisibility(View.VISIBLE);
 		reset_button.setVisibility(View.VISIBLE);
 		/*String text = "Resultat : \n" + "Brain = ";
@@ -839,34 +858,42 @@ public class MainActivity extends FragmentActivity {
 			im_brain.setImageBitmap(check);
 		else
 			im_brain.setImageBitmap(cross);
+		
 		if (is_test_gps_good)
 			im_gps.setImageBitmap(check);
 		else
 			im_gps.setImageBitmap(cross);
+		
 		if (is_test_gsm_good)
 			im_gsm.setImageBitmap(check);
 		else
 			im_gsm.setImageBitmap(cross);
+		
 		if (is_test_ihm_good)
 			im_ihm.setImageBitmap(check);
 		else
 			im_ihm.setImageBitmap(cross);
+		
 		if (is_test_imu_good)
 			im_imu.setImageBitmap(check);
 		else
 			im_imu.setImageBitmap(cross);
+		
 		if (is_test_son_good)
 			im_son.setImageBitmap(check);
 		else
 			im_son.setImageBitmap(cross);
+		
 		if (is_test_tension_good)
 			im_tension.setImageBitmap(check);
 		else
 			im_tension.setImageBitmap(cross);
+		
 		if (is_test_verin_good)
 			im_verin.setImageBitmap(check);
 		else
 			im_verin.setImageBitmap(cross);
+		
 		if (is_test_odo_good)
 			im_odo.setImageBitmap(check);
 		else
