@@ -11,7 +11,7 @@
         android:layout_width="@dimen/nexus7_1200px_w"
         android:layout_height="@dimen/nexus7_700px_h"
         android:layout_centerInParent="true"
-        android:text="Appuyer sur le bouton une fois vous êtes assuré d&apos;avoir une manette connectée"
+        android:text="Appuyez sur le bouton une fois vous êtres assuré d&apos;avoir une télécommande connectée et que l'interface can soit allumée"
         android:textSize="25dp" />
     
     <Button

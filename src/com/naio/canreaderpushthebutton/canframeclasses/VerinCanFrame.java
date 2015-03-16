@@ -202,7 +202,7 @@ public class VerinCanFrame extends CanFrame {
 			}
 			Log.e("odo",ard+"--"+cptArg+"-...-"+arg +"--"+cptArg+"-...-"+avd+"--"+cptAvg+"-...-"+avg +"--"+cptAvg);
 			if ((cptArg -ard) <= ( cptAvd - avd +3 ) && (cptArg -ard) >= ( cptAvd - avd -3 )
-					&& (cptArg - arg) <= (cptAvg -avg +3) && (cptArg - arg) >= (cptAvg -avg -3) && cptAvg > 0 && cptArg > 0 && cptAvd >0 && cptArd >0) {
+					&& (cptArg - arg) <= (cptAvg -avg +3) && (cptArg - arg) >= (cptAvg -avg -3) && cptAvg > 15 && cptArg > 15 && cptAvd >15 && cptArd >15) {
 				return true;
 			} else {
 				return false;

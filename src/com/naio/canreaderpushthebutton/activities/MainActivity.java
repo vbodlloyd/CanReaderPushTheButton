@@ -147,8 +147,10 @@ public class MainActivity extends FragmentActivity {
 		reset_button = (TextView) findViewById(R.id.button_reset_main_activity);
 		reset_button.setVisibility(View.GONE);
 		test_text.setVisibility(View.GONE);
-		check = BitmapFactory.decodeResource(this.getResources(), R.drawable.vcheck);
-		cross = BitmapFactory.decodeResource(this.getResources(), R.drawable.cross2);
+		check = BitmapFactory.decodeResource(this.getResources(),
+				R.drawable.vcheck);
+		cross = BitmapFactory.decodeResource(this.getResources(),
+				R.drawable.cross2);
 		im_brain = (ImageView) findViewById(R.id.im_brain);
 		im_gps = (ImageView) findViewById(R.id.im_gps);
 		im_gsm = (ImageView) findViewById(R.id.im_gsm);
@@ -181,7 +183,8 @@ public class MainActivity extends FragmentActivity {
 			new AlertDialog.Builder(this)
 					.setTitle("Information")
 					.setMessage(
-							"Vous pouvez brancher dès à présent l'interface can usb, si elle est déjà branché, rebranchez la.")
+							"Vous pouvez brancher dès à présent l'interface can usb, si elle est déjà branché, rebranchez la.\n" +
+							"Et assurez vous bien que le robot soit allumé ( il affiche 'mode : binage ' ) et que l'interface can soit allumée avant d'appuyer sur le bouton.")
 					.setPositiveButton(android.R.string.yes,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
@@ -268,11 +271,11 @@ public class MainActivity extends FragmentActivity {
 		layout_result.setVisibility(View.GONE);
 		reset_button.setVisibility(View.GONE);
 		state = BEGINNING;
-		stateIn =0;
-		cptStateGps=0;
-		cptStateOnClick=0;
+		stateIn = 0;
+		cptStateGps = 0;
+		cptStateOnClick = 0;
 		handler.removeCallbacks(runnable);
-		//go_button.setText("Appuyer sur ce bouton une fois vous êtes assuré d'avoir une manette connectée");
+		// go_button.setText("Appuyer sur ce bouton une fois vous êtes assuré d'avoir une manette connectée");
 		// the sleep here is just because there is a sleep when the user press
 		// the READ button, so do the STOP.
 		try {
@@ -281,10 +284,11 @@ public class MainActivity extends FragmentActivity {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	protected void onPause() {
-		//we stop the application when onPause because an other app using the can could be running
+		// we stop the application when onPause because an other app using the
+		// can could be running
 		super.onPause();
 		onBackPressed();
 	}
@@ -345,11 +349,14 @@ public class MainActivity extends FragmentActivity {
 			return;
 		}
 		keep_control_of_can();
-		handler.postDelayed(runnable, MILLISECONDS_RUNNABLE);
+		if(state == TEST_ODO){
+			handler.postDelayed(runnable, 100);
+		}else
+			handler.postDelayed(runnable, MILLISECONDS_RUNNABLE);
 	}
 
 	private void test_brain() {
-		
+
 		test_text.setText("Test Brain");
 		if (brainCanFrame.getTemperature() != null) {
 			is_test_brain_good = true;
@@ -373,19 +380,15 @@ public class MainActivity extends FragmentActivity {
 			}
 			Log.e("gps", text);
 			String[] gps = text.split(",");
-			/*if (gps.length <= 5) {
-				cptStateGps++;
-				if (cptStateGps > 5) {
-					stateIn++;
-					is_test_gps_good = false;
-				}
-				break;
-			}*/
+			/*
+			 * if (gps.length <= 5) { cptStateGps++; if (cptStateGps > 5) {
+			 * stateIn++; is_test_gps_good = false; } break; }
+			 */
 			if (gps[0].contains("GPGLL")) {
-					is_test_gps_good = true;
+				is_test_gps_good = true;
 				stateIn++;
 			} else if (gps[0].contains("GP")) {
-					is_test_gps_good = true;
+				is_test_gps_good = true;
 				stateIn++;
 			} else {
 				cptStateGps++;
@@ -510,53 +513,27 @@ public class MainActivity extends FragmentActivity {
 		case 0:
 			VerinCanFrame.resetCpt();
 			test_text
-					.setText("Vous avez 10 secondes pour faire avancer/reculer le robot sur 2 metres");
+					.setText("Vous avez 30 secondes pour faire avancer/reculer le robot sur 2 metres");
 			stateIn++;
 			break;
-		case 1:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 2:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 3:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 4:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 5:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 6:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 7:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 8:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 9:
-			verinCanFrame.getOdom();
-			stateIn++;
-			break;
-		case 10:
-			if (verinCanFrame.getOdom())
-				is_test_odo_good = true;
-			else
-				is_test_odo_good = false;
-			state = FIN;
-			stateIn = 0;
-			break;
+		default:
+			if(stateIn > 300){
+				if (verinCanFrame.getOdom())
+					is_test_odo_good = true;
+				else
+					is_test_odo_good = false;
+				state = FIN;
+				stateIn = 0;
+				break;
+			}else{
+				if (verinCanFrame.getOdom()) {
+					is_test_odo_good = true;
+					state = FIN;
+					stateIn = 0;
+				}
+				stateIn++;
+				break;
+			}
 		}
 	}
 
@@ -566,7 +543,7 @@ public class MainActivity extends FragmentActivity {
 			test_text.setText("Test IHM");
 			cansend("383", "02.10.10.10.02.32");
 			stateIn++;
-			cptStateOnClick =0;
+			cptStateOnClick = 0;
 			break;
 		case 1:
 			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -587,11 +564,9 @@ public class MainActivity extends FragmentActivity {
 			};
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(
-					"Avez vous entendu un son (*bip* *bip* *bip* )?")
+			builder.setMessage("Avez vous entendu un son (*bip* *bip* *bip* )?")
 					.setPositiveButton("Oui", dialogClickListener)
-					.setNegativeButton("Non", dialogClickListener)
-					.show();
+					.setNegativeButton("Non", dialogClickListener).show();
 
 			stateIn = 20;
 			break;
@@ -599,8 +574,8 @@ public class MainActivity extends FragmentActivity {
 			cptStateOnClick++;
 			if (clickOnScreen)
 				stateIn = 2;
-			if(cptStateOnClick >= 10){
-				cptStateOnClick =0;
+			if (cptStateOnClick >= 10) {
+				cptStateOnClick = 0;
 				stateIn = 1;
 			}
 			break;
@@ -744,7 +719,9 @@ public class MainActivity extends FragmentActivity {
 		case 6:
 			button_retour_position_clicked(null);
 			pos3 = verinCanFrame.getRetourPosition();
-			Log.e("posverin",pos1+"--"+pos2+"---"+pos3+"---"+(pos1!=pos2)+"---"+(pos2!=pos3)+"---"+(false && false));
+			Log.e("posverin", pos1 + "--" + pos2 + "---" + pos3 + "---"
+					+ (pos1 != pos2) + "---" + (pos2 != pos3) + "---"
+					+ (false && false));
 			if (pos1 != pos2 && pos2 != pos3) {
 				is_test_verin_good = true;
 			} else
@@ -777,7 +754,8 @@ public class MainActivity extends FragmentActivity {
 			stateIn++;
 			break;
 		case 2:
-			if (gsmCanFrame.getGsmData().contains("READY") || gsmCanFrame.getGsmData().contains("PIN")) {
+			if (gsmCanFrame.getGsmData().contains("READY")
+					|| gsmCanFrame.getGsmData().contains("PIN")) {
 				is_test_gsm_good = true;
 			} else
 				is_test_gsm_good = false;
@@ -808,92 +786,46 @@ public class MainActivity extends FragmentActivity {
 		test_text.setVisibility(View.GONE);
 		layout_result.setVisibility(View.VISIBLE);
 		reset_button.setVisibility(View.VISIBLE);
-		/*String text = "Resultat : \n" + "Brain = ";
-		if (is_test_brain_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nGPS =";
-		if (is_test_gps_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nGSM =";
-		if (is_test_gsm_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nIHM =";
-		if (is_test_ihm_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nIMU =";
-		if (is_test_imu_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nSon =";
-		if (is_test_son_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nTension =";
-		if (is_test_tension_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nVerin =";
-		if (is_test_verin_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		text += "\nOdo =";
-		if (is_test_odo_good)
-			text += " en fonction ";
-		else
-			text += " erreur ";
-		go_button.setText(text);*/
 		if (is_test_brain_good)
 			im_brain.setImageBitmap(check);
 		else
 			im_brain.setImageBitmap(cross);
-		
+
 		if (is_test_gps_good)
 			im_gps.setImageBitmap(check);
 		else
 			im_gps.setImageBitmap(cross);
-		
+
 		if (is_test_gsm_good)
 			im_gsm.setImageBitmap(check);
 		else
 			im_gsm.setImageBitmap(cross);
-		
+
 		if (is_test_ihm_good)
 			im_ihm.setImageBitmap(check);
 		else
 			im_ihm.setImageBitmap(cross);
-		
+
 		if (is_test_imu_good)
 			im_imu.setImageBitmap(check);
 		else
 			im_imu.setImageBitmap(cross);
-		
+
 		if (is_test_son_good)
 			im_son.setImageBitmap(check);
 		else
 			im_son.setImageBitmap(cross);
-		
+
 		if (is_test_tension_good)
 			im_tension.setImageBitmap(check);
 		else
 			im_tension.setImageBitmap(cross);
-		
+
 		if (is_test_verin_good)
 			im_verin.setImageBitmap(check);
 		else
 			im_verin.setImageBitmap(cross);
-		
+
 		if (is_test_odo_good)
 			im_odo.setImageBitmap(check);
 		else
