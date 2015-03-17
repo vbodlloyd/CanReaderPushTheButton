@@ -1,6 +1,8 @@
 package com.naio.canreaderpushthebutton.activities;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.lang.Process;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +37,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 
@@ -231,7 +235,16 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void button_go_clicked(View v) {
-		button_connect_clicked(v);
+		if(button_connect_clicked(v).contains("can0")){
+			Toast.makeText(this, "Branche la putain d'interface CAN gros sac à merde, bordel ! Mais t'es trop con...", Toast.LENGTH_LONG).show();
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
 		button_read_clicked(v);
 	}
 
@@ -253,7 +266,7 @@ public class MainActivity extends FragmentActivity {
 			}
 			canDumpThread = new CanDumpThread();
 			canParserThread = new CanParserThread(canDumpThread);
-			canDumpThread.setCmd("su -c /sbin/candump -tz can0");
+			canDumpThread.setCmd("su -c /sbin/candump -tz -e can0,0:0,#FFFFFFFF");
 			canDumpThread.start();
 			canParserThread.start();
 			cansend("00F", KEEP_CONTROL_CAN_LOOP_MESSAGE);
@@ -315,8 +328,8 @@ public class MainActivity extends FragmentActivity {
 	 * 
 	 * @param v
 	 */
-	public void button_connect_clicked(View v) {
-		executeCommand("su -c ip link set can0 up type can bitrate 1000000");
+	public String button_connect_clicked(View v) {
+		return executeCommand("su -c ip link set can0 up type can bitrate 1000000");
 	}
 
 	/**
@@ -346,6 +359,17 @@ public class MainActivity extends FragmentActivity {
 			display_result();
 			handler.removeCallbacks(runnable);
 			state = BEGINNING;
+			return;
+		}
+		
+		if(!canParserThread.getCanParser().getErrorcanframe().getError().contentEquals("no error")){
+			button_read_clicked(null);
+			Toast.makeText(
+					this,
+					"can error fuck this shit you know man because : \n"
+							+ canParserThread.getCanParser().getErrorcanframe()
+									.getComplementError(), Toast.LENGTH_LONG)
+					.show();
 			return;
 		}
 		keep_control_of_can();
@@ -727,14 +751,27 @@ public class MainActivity extends FragmentActivity {
 		// Only use by the CONNECT button
 		StringBuffer output = new StringBuffer();
 		Process p;
+		String line = "";
+		String answer = "";
 		try {
 			p = Runtime.getRuntime().exec(command);
+			
+				BufferedReader stdError = new BufferedReader(new 
+				     InputStreamReader(p.getErrorStream()));
+
+				String s = null;
+				
+				// read any errors from the attempted command
+				while ((s = stdError.readLine()) != null) {
+				    answer+=s;
+				}
 			p.waitFor();
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return output.toString();
+		return answer;
 	}
 
 	/**
