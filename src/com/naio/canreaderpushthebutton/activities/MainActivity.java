@@ -235,8 +235,11 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void button_go_clicked(View v) {
-		if(button_connect_clicked(v).contains("can0")){
-			Toast.makeText(this, "Branche la putain d'interface CAN gros sac à merde, bordel ! Mais t'es trop con...", Toast.LENGTH_LONG).show();
+		if (button_connect_clicked(v).contains("can0")) {
+			Toast.makeText(
+					this,
+					"L'interface CAN n'est pas branchée ou n'est pas allumée",
+					Toast.LENGTH_LONG).show();
 			try {
 				Thread.sleep(400);
 			} catch (InterruptedException e) {
@@ -266,7 +269,8 @@ public class MainActivity extends FragmentActivity {
 			}
 			canDumpThread = new CanDumpThread();
 			canParserThread = new CanParserThread(canDumpThread);
-			canDumpThread.setCmd("su -c /sbin/candump -tz -e can0,0:0,#FFFFFFFF");
+			canDumpThread
+					.setCmd("su -c /sbin/candump -tz -e can0,0:0,#FFFFFFFF");
 			canDumpThread.start();
 			canParserThread.start();
 			cansend("00F", KEEP_CONTROL_CAN_LOOP_MESSAGE);
@@ -332,6 +336,10 @@ public class MainActivity extends FragmentActivity {
 		return executeCommand("su -c ip link set can0 up type can bitrate 1000000");
 	}
 
+	public void disconnect_can() {
+		executeCommand("su -c ip link set can0 down");
+	}
+
 	/**
 	 * Function call by the runnable, it read the FIFO of CanDumpThread with the
 	 * get100Poll function ( which extract 100 values dumped or less if there is
@@ -361,9 +369,11 @@ public class MainActivity extends FragmentActivity {
 			state = BEGINNING;
 			return;
 		}
-		
-		if(!canParserThread.getCanParser().getErrorcanframe().getError().contentEquals("no error")){
+
+		if (!canParserThread.getCanParser().getErrorcanframe().getError()
+				.contentEquals("no error")) {
 			button_read_clicked(null);
+			disconnect_can();
 			Toast.makeText(
 					this,
 					"can error fuck this shit you know man because : \n"
@@ -476,7 +486,7 @@ public class MainActivity extends FragmentActivity {
 		case 0:
 			VerinCanFrame.resetCpt();
 			test_text
-					.setText("Vous avez 30 secondes pour faire avancer/reculer le robot sur 2 metres");
+					.setText("Vous avez 30 secondes pour faire avancer/reculer le robot sur 3 metres");
 			stateIn++;
 			break;
 		default:
@@ -547,7 +557,7 @@ public class MainActivity extends FragmentActivity {
 			break;
 		case 2:
 			test_text
-					.setText("Vous avez 10 secondes pour appuyer, en le maintenant, sur un bouton de l'ihm");
+					.setText("Vous avez 10 secondes pour maintenir appuyé un bouton de l'ihm");
 			memoryKeyboardState = ihmCanFrame.getDataKeyboard();
 			stateIn++;
 			break;
@@ -755,18 +765,17 @@ public class MainActivity extends FragmentActivity {
 		String answer = "";
 		try {
 			p = Runtime.getRuntime().exec(command);
-			
-				BufferedReader stdError = new BufferedReader(new 
-				     InputStreamReader(p.getErrorStream()));
 
-				String s = null;
-				
-				// read any errors from the attempted command
-				while ((s = stdError.readLine()) != null) {
-				    answer+=s;
-				}
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(
+					p.getErrorStream()));
+
+			String s = null;
+
+			// read any errors from the attempted command
+			while ((s = stdError.readLine()) != null) {
+				answer += s;
+			}
 			p.waitFor();
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();

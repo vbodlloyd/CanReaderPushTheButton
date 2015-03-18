@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.os.Handler;
+import android.util.Log;
 
 /**
  * CanDumpThread is the thread which execute the command candump and which place
@@ -86,14 +87,17 @@ public class CanDumpThread extends Thread {
 		Process p;
 		try {
 			p = Runtime.getRuntime().exec(command);
+			Log.e("errr",command);
 			String line = null;
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
 			while (true) {
 				line = null;
 				while ((line = reader.readLine()) != null) {
+					Log.e("errr",line);
 					synchronized (entreThread) {
 						getQueue().offer(line);
+						
 						entreThread.notify();
 					}
 
