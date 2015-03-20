@@ -46,5 +46,22 @@ public class GSMCanFrame extends CanFrame {
 			return this;
 		}
 	}
+	
+	public boolean isGsmWorking() {
+		synchronized (lock) {
+
+			String text = "";
+			for (int i : gsmData) {
+				text += (char) i;
+			}
+
+			// avoid the textview to be filled at maximum
+			if (text.contains("AT+")) {
+				gsmData.clear();
+				return true;
+			}
+			return false;
+		}
+	}
 
 }

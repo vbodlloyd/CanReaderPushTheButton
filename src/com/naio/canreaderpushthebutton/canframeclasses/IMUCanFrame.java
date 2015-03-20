@@ -230,4 +230,47 @@ public class IMUCanFrame extends CanFrame {
 		IMUCanFrame.timeAccel = IMUCanFrame.time;
 		IMUCanFrame.indexC += 1;
 	}
+	
+
+	/**
+	 * @return the accelXMSB
+	 */
+	public Integer getAccelXMSB() {
+		return accelXMSB;
+	}
+
+	/**
+	 * @return the accelXLSB
+	 */
+	public Integer getAccelXLSB() {
+		return accelXLSB;
+	}
+
+	/**
+	 * @return the gyroXMSB
+	 */
+	public Integer getGyroXMSB() {
+		return gyroXMSB;
+	}
+
+	/**
+	 * @return the gyroXLSB
+	 */
+	public Integer getGyroXLSB() {
+		return gyroXLSB;
+	}
+
+	/**
+	 * @return the magnetoXMSB
+	 */
+	public Integer getMagnetoXMSB() {
+		return magnetoXMSB;
+	}
+
+	/**
+	 * @return the magnetoXLSB
+	 */
+	public Integer getMagnetoXLSB() {
+		return magnetoXLSB;
+	}
 }

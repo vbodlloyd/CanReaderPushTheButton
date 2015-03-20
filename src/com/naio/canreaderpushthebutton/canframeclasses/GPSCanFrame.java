@@ -123,4 +123,13 @@ public class GPSCanFrame extends CanFrame {
 		return "Lat:" + latf_degrees + "\nLon:" + lonf_degrees + "\nUTC:"
 				+ utctime;
 	}
+	
+	public String getGpsDataInString(){
+
+		String text = "";
+		for (int a : gpsData) {
+			text += (char) a;
+		}
+		return text;
+	}
 }
