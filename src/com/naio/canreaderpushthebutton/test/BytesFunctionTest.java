@@ -15,7 +15,6 @@ public class BytesFunctionTest extends
 
 	protected void setUp() throws Exception {
 		super.setUp();
-
 		// MainActivity mainActivity = getActivity();
 	}
 
@@ -24,7 +23,6 @@ public class BytesFunctionTest extends
 		// Solo solo = new Solo(getInstrumentation(), getActivity());
 		// getInstrumentation().waitForIdleSync();
 		// // Now do whatever you need to do to trigger your dialog.
-		//
 		// // Let's assume a properly lame dialog title.
 		// assertTrue("Could not find the dialog!",
 		// solo.searchText("My Dialog Title"));

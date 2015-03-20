@@ -261,4 +261,19 @@ public class IHMCanFrame extends CanFrame {
 	public Integer getEtatClavier() {
 		return etatClavier;
 	}
+
+	/**
+	 * @return the versionMaj
+	 */
+	public Integer getVersionMaj() {
+		return versionMaj;
+	}
+
+	/**
+	 * @return the versionMin
+	 */
+	public Integer getVersionMin() {
+		return versionMin;
+	}
+
 }
