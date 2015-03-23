@@ -8,7 +8,10 @@ import com.naio.canreaderpushthebutton.parser.CanParser;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class BrainCanFrameTest extends ActivityInstrumentationTestCase2<MainActivity> {
+	
+	
 	private CanParser canParser;
+	private final String TRAME_TEMPERATURE = "(1215.1251) can0 00E [1] 08";
 	
 	@SuppressWarnings("deprecation")
 	public BrainCanFrameTest() {
@@ -17,13 +20,11 @@ public class BrainCanFrameTest extends ActivityInstrumentationTestCase2<MainActi
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		
-		//MainActivity mainActivity = getActivity();
 		canParser = new CanParser();
 	}
 	
 	public void testParseTemperature(){
-		canParser.parseOneFrame("(1215.1251) can0 00E [1] 08");
+		canParser.parseOneFrame(TRAME_TEMPERATURE);
 		assertEquals(canParser.getBraincanframe().getTemperature(), new UInt8(8));
 	}
 

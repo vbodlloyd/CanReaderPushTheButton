@@ -307,7 +307,15 @@ public class MainActivity extends FragmentActivity {
 		// we stop the application when onPause because an other app using the
 		// can could be running
 		super.onPause();
-		onBackPressed();
+		if (reading) {
+			reading = false;
+			canDumpThread.quit();
+			canParserThread.setStop(false);
+			canDumpThread.interrupt();
+			canParserThread.interrupt();
+			canSendThread.interrupt();
+			handler.removeCallbacks(runnable);
+		}
 	}
 
 	@Override
