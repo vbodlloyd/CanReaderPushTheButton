@@ -12,4 +12,38 @@
         <item>rouge</item>
         <item>verte</item>
     </string-array>
+
+
+<string name="instruction">Appuyez sur le bouton une fois vous êtres assuré d\'avoir une télécommande connectée et que l\'interface can soit allumée</string>
+<string name="button_debuter">Debuter le test</string>
+<string name="button_recommencer">Recommencer</string>
+<string name="checklist_brain">BRAIN</string>
+<string name="checklist_gps">GPS</string>
+<string name="checklist_gsm">GSM</string>
+<string name="checklist_ihm">IHM</string>
+<string name="checklist_imu">IMU</string>
+<string name="checklist_son">Son</string>
+<string name="checklist_tension">Tension</string>
+<string name="checklist_verin">Verin</string>
+<string name="checklist_odo">ODO</string>
+<string name="display">&#8230;</string>
+<string name="info_title">INFO</string>
+<string name="info_got_it">Got it</string>
+<string name="info_info">Utilisation : \n-Après vous êtres assuré que l\'interface can était allumée et qu\'une télécommande était connectée, appuyez sur le bouton.</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </resources>

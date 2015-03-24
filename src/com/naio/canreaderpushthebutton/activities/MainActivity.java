@@ -217,7 +217,7 @@ public class MainActivity extends FragmentActivity {
 			final Dialog dialog = new Dialog(this);
 
 			dialog.setContentView(R.layout.info_dialog);
-			dialog.setTitle("INFO");
+			dialog.setTitle(getString(R.string.info_title));
 
 			Button dialogButton = (Button) dialog
 					.findViewById(R.id.dialogButtonOK);
@@ -384,7 +384,7 @@ public class MainActivity extends FragmentActivity {
 			disconnect_can();
 			Toast.makeText(
 					this,
-					"can error fuck this shit you know man because : \n"
+					"can error : \n"
 							+ canParserThread.getCanParser().getErrorcanframe()
 									.getComplementError(), Toast.LENGTH_LONG)
 					.show();

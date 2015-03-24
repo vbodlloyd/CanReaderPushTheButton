@@ -11,7 +11,7 @@
         android:layout_width="@dimen/nexus7_1200px_w"
         android:layout_height="@dimen/nexus7_700px_h"
         android:layout_centerInParent="true"
-        android:text="Appuyez sur le bouton une fois vous êtres assuré d&apos;avoir une télécommande connectée et que l'interface can soit allumée"
+        android:text="@string/instruction"
         android:textSize="25dp" />
     
     <Button
@@ -20,7 +20,7 @@
         android:layout_height="@dimen/nexus7_300px_w"
         android:layout_centerInParent="true"
         android:onClick="button_go_clicked"
-        android:text="Debuter le test"
+        android:text="@string/button_debuter"
         android:background="@drawable/buttonselector"
         android:textSize="25dp" />
     
@@ -40,7 +40,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:onClick="button_read_clicked"
-        android:text="Recommencer"
+        android:text="@string/button_recommencer"
         android:clickable="true"
         android:textSize="25dp"
         android:gravity="center"
@@ -66,7 +66,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="BRAIN "
+                android:text="@string/checklist_brain"
                 android:textSize="25dp" />
 
             <ImageView
@@ -88,7 +88,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="GPS "
+                android:text="@string/checklist_gps"
                 android:textSize="25dp" />
 
             <ImageView
@@ -110,7 +110,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="GSM "
+                android:text="@string/checklist_gsm"
                 android:textSize="25dp" />
 
             <ImageView
@@ -132,7 +132,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="IHM "
+                android:text="@string/checklist_ihm"
                 android:textSize="25dp" />
 
             <ImageView
@@ -154,7 +154,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="IMU "
+                android:text="@string/checklist_imu"
                 android:textSize="25dp" />
 
             <ImageView
@@ -176,7 +176,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Son "
+                android:text="@string/checklist_son"
                 android:textSize="25dp" />
 
             <ImageView
@@ -198,7 +198,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Tension "
+                android:text="@string/checklist_tension"
                 android:textSize="25dp" />
 
             <ImageView
@@ -220,7 +220,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Verin "
+                android:text="@string/checklist_verin"
                 android:textSize="25dp" />
 
             <ImageView
@@ -242,7 +242,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="ODO "
+                android:text="@string/checklist_odo"
                 android:textSize="25dp" />
 
             <ImageView
