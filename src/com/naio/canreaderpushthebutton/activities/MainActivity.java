@@ -425,7 +425,7 @@ public class MainActivity extends FragmentActivity {
 			}
 			String[] gps = text.split(",");
 
-			if (gps[0].contains("GPGLL")) {
+			if (gps[0].contains("GLL")) {
 				is_test_gps_good = true;
 				stateIn++;
 			} else if (gps[0].contains("GP")) {
@@ -668,7 +668,8 @@ public class MainActivity extends FragmentActivity {
 			break;
 		case 2:
 			if (gsmCanFrame.getGsmData().contains("READY")
-					|| gsmCanFrame.getGsmData().contains("PIN")) {
+					|| gsmCanFrame.getGsmData().contains("SIM")
+					|| gsmCanFrame.getGsmData().contains("ERROR")) {
 				is_test_gsm_good = true;
 			} else
 				is_test_gsm_good = false;
