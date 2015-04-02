@@ -188,8 +188,8 @@ public class MainActivity extends FragmentActivity {
 			new AlertDialog.Builder(this)
 					.setTitle("Information")
 					.setMessage(
-							"Vous pouvez brancher dès à présent l'interface can usb, si elle est déjà branché, rebranchez la.\n"
-									+ "Et assurez vous bien que le robot soit allumé ( il affiche 'mode : binage ' ) et que l'interface can soit allumée avant d'appuyer sur le bouton.")
+							"Vous pouvez brancher dès à présent l'interface can usb, si elle est déjà branché, rebranchez la seulement si c'est la première fois que vous lancez l'application depuis le démarrage de la tablette.\n"
+									+ "Et assurez vous bien que le robot soit allumé ( il affiche 'mode : binage ' ).")
 					.setPositiveButton(android.R.string.yes,
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
@@ -428,7 +428,7 @@ public class MainActivity extends FragmentActivity {
 			if (gps[0].contains("GLL")) {
 				is_test_gps_good = true;
 				stateIn++;
-			} else if (gps[0].contains("GP")) {
+			} else if (gps[0].contains("GSV")) {
 				is_test_gps_good = true;
 				stateIn++;
 			} else {
