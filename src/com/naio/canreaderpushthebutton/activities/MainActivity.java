@@ -72,6 +72,7 @@ public class MainActivity extends FragmentActivity {
 	private static final Integer TEST_IMU = 5;
 	private static final Integer TEST_BRAIN = 6;
 	private static final Integer TEST_ODO = 7;
+	private static final Integer TEST_MANETTE = 8;
 	private static final Integer FIN = 20;
 	private static Integer stateIn = 0;
 	private static boolean clickOnScreen = false;
@@ -124,6 +125,8 @@ public class MainActivity extends FragmentActivity {
 	private TextView reset_button;
 	private TextView go_text;
 	private TextView test_text;
+	protected boolean is_test_manette_good;
+	private ImageView im_manette;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +166,7 @@ public class MainActivity extends FragmentActivity {
 		im_imu = (ImageView) findViewById(R.id.im_imu);
 		im_odo = (ImageView) findViewById(R.id.im_odo);
 		im_son = (ImageView) findViewById(R.id.im_son);
+		im_manette = (ImageView) findViewById(R.id.im_manette);
 		im_tension = (ImageView) findViewById(R.id.im_tension);
 		im_verin = (ImageView) findViewById(R.id.im_verin);
 		state = 0;
@@ -371,6 +375,10 @@ public class MainActivity extends FragmentActivity {
 			test_brain();
 		} else if (state == TEST_ODO) {
 			test_odo();
+		}else if(state == TEST_MANETTE){
+			test_manette();
+		
+			
 		} else if (state == FIN) {
 			display_result();
 			handler.removeCallbacks(runnable);
@@ -503,13 +511,13 @@ public class MainActivity extends FragmentActivity {
 					is_test_odo_good = true;
 				else
 					is_test_odo_good = false;
-				state = FIN;
+				state = TEST_MANETTE;
 				stateIn = 0;
 				break;
 			} else {
 				if (verinCanFrame.getOdom()) {
 					is_test_odo_good = true;
-					state = FIN;
+					state = TEST_MANETTE;
 					stateIn = 0;
 				}
 				stateIn++;
@@ -678,6 +686,56 @@ public class MainActivity extends FragmentActivity {
 			break;
 		}
 	}
+	
+	public void test_manette(){
+		switch (stateIn) {
+		case 0:
+			clickOnScreen = false;
+			test_text
+			.setText("Test Manette");
+			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					switch (which) {
+					case DialogInterface.BUTTON_POSITIVE:
+						is_test_manette_good = true;
+						break;
+
+					case DialogInterface.BUTTON_NEGATIVE:
+						is_test_manette_good = false;
+						break;
+					}
+					clickOnScreen = true;
+				}
+			};
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Placez vous à 3 mètres du robot et faites le avancer/reculer tout en restant à cette distance." +
+					"Une fois vous êtres assuré que la manette fonctionnait correctement, appuyez sur OK")
+					.setPositiveButton("OK", dialogClickListener)
+					.setNegativeButton("Non", dialogClickListener).show();
+
+			stateIn = 20;
+			cptStateOnClick = 0;
+			break;
+		case 20:
+			cptStateOnClick++;
+			if (clickOnScreen)
+				stateIn = 1;
+			if (cptStateOnClick >= 	30) {
+				cptStateOnClick = 0;
+				stateIn = 0;
+			}
+			break;
+		case 1:
+			stateIn = 0;
+			state = FIN;
+			break;
+		default:
+			break;
+		}
+	}
 
 	private void init_protocol() {
 		// initialisation of the variables
@@ -745,6 +803,11 @@ public class MainActivity extends FragmentActivity {
 			im_odo.setImageBitmap(check);
 		else
 			im_odo.setImageBitmap(cross);
+		
+		if (is_test_manette_good)
+			im_manette.setImageBitmap(check);
+		else
+			im_manette.setImageBitmap(cross);
 	}
 
 	/**
